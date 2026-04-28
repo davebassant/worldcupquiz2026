@@ -1,9 +1,9 @@
 from typing import List, Dict, Any
 
-def calculate_category_1_match_totals(predictions: Dict[str, int], actuals: Dict[str, int]) -> int:
+def calculate_category_1_match_totals(predictions: Dict[str, str], actuals: Dict[str, str]) -> int:
     """
     Category 1: Match Totals (5 pts each)
-    Predict most/fewest goals scored and conceded in the group stages.
+    Predict TEAMS with most/fewest goals scored and conceded in the group stages.
     """
     score = 0
     # Expected keys: 'most_goals_scored', 'fewest_goals_scored', 'most_goals_conceded', 'fewest_goals_conceded'

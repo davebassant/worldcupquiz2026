@@ -3,10 +3,10 @@ from app.scoring import calculate_total_score
 def test_scoring():
     predictions = {
         'cat1': {
-            'most_goals_scored': 15,
-            'fewest_goals_scored': 2,
-            'most_goals_conceded': 10,
-            'fewest_goals_conceded': 1
+            'most_goals_scored': 'Brazil',
+            'fewest_goals_scored': 'Oman',
+            'most_goals_conceded': 'Iraq',
+            'fewest_goals_conceded': 'France'
         },
         'cat2': {
             'Group A': ['USA', 'Mexico'],
@@ -26,10 +26,10 @@ def test_scoring():
 
     actuals = {
         'cat1': {
-            'most_goals_scored': 15,  # Correct (5)
-            'fewest_goals_scored': 2,  # Correct (5)
-            'most_goals_conceded': 8,  # Wrong
-            'fewest_goals_conceded': 1  # Correct (5)
+            'most_goals_scored': 'Brazil',  # Correct (5)
+            'fewest_goals_scored': 'Oman',  # Correct (5)
+            'most_goals_conceded': 'Panama',  # Wrong
+            'fewest_goals_conceded': 'France'  # Correct (5)
         },
         'cat2': {
             'Group A': ['USA', 'Mexico'], # Both correct (4) + Exact order (1) = 5

@@ -1,0 +1,215 @@
+{% extends 'base.html' %}
+
+{% block title %}My Predictions - World Cup 2026{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">My Predictions</h1>
+    <p class="text-gray-600">
+        {% if deadline_passed %}
+            <span class="text-red-600 font-bold">The deadline has passed.</span> Predictions are now locked.
+        {% else %}
+            Deadline: <span class="font-bold">{{ deadline.strftime('%B %d, %Y at %H:%M %Z') }}</span>. 
+            You can edit your picks until the first game starts.
+        {% endif %}
+    </p>
+</div>
+
+<div class="space-y-8">
+    <!-- Category 1: Match Totals -->
+    <section class="bg-white p-6 rounded-lg shadow border-l-4 border-blue-600">
+        <h2 class="text-xl font-bold mb-4">Category 1: Match Totals (5 pts each)</h2>
+        <form method="POST">
+            <input type="hidden" name="category" value="cat1">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Team with MOST goals scored</label>
+                    <select name="most_goals_scored" class="mt-1 block w-full border rounded-md p-2">
+                        <option value="">Select Team</option>
+                        {% for team in all_teams %}
+                        <option value="{{ team }}" {% if predictions.cat1 and predictions.cat1.most_goals_scored == team %}selected{% endif %}>{{ team }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Team with FEWEST goals scored</label>
+                    <select name="fewest_goals_scored" class="mt-1 block w-full border rounded-md p-2">
+                        <option value="">Select Team</option>
+                        {% for team in all_teams %}
+                        <option value="{{ team }}" {% if predictions.cat1 and predictions.cat1.fewest_goals_scored == team %}selected{% endif %}>{{ team }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Team with MOST goals conceded</label>
+                    <select name="most_goals_conceded" class="mt-1 block w-full border rounded-md p-2">
+                        <option value="">Select Team</option>
+                        {% for team in all_teams %}
+                        <option value="{{ team }}" {% if predictions.cat1 and predictions.cat1.most_goals_conceded == team %}selected{% endif %}>{{ team }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Team with FEWEST goals conceded</label>
+                    <select name="fewest_goals_conceded" class="mt-1 block w-full border rounded-md p-2">
+                        <option value="">Select Team</option>
+                        {% for team in all_teams %}
+                        <option value="{{ team }}" {% if predictions.cat1 and predictions.cat1.fewest_goals_conceded == team %}selected{% endif %}>{{ team }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <button type="submit" {% if deadline_passed %}disabled{% endif %} class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50">Save Category 1</button>
+        </form>
+    </section>
+
+    <!-- Category 2: Group Qualification -->
+    <section class="bg-white p-6 rounded-lg shadow border-l-4 border-green-600">
+        <h2 class="text-xl font-bold mb-4">Category 2: Group Qualification (2 pts each + bonus)</h2>
+        <form method="POST">
+            <input type="hidden" name="category" value="cat2">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {% for group, teams in groups.items() %}
+                <div class="border p-3 rounded bg-gray-50">
+                    <h3 class="font-bold text-sm mb-2">{{ group }}</h3>
+                    <div class="space-y-2">
+                        <select name="{{ group }}_1" class="w-full text-xs border p-1 rounded">
+                            <option value="">1st Place</option>
+                            {% for team in teams %}
+                            <option value="{{ team }}" {% if predictions.cat2 and predictions.cat2[group][0] == team %}selected{% endif %}>{{ team }}</option>
+                            {% endfor %}
+                        </select>
+                        <select name="{{ group }}_2" class="w-full text-xs border p-1 rounded">
+                            <option value="">2nd Place</option>
+                            {% for team in teams %}
+                            <option value="{{ team }}" {% if predictions.cat2 and predictions.cat2[group][1] == team %}selected{% endif %}>{{ team }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button type="submit" {% if deadline_passed %}disabled{% endif %} class="mt-4 bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 disabled:opacity-50">Save Category 2</button>
+        </form>
+    </section>
+
+    <!-- Category 3: The Lucky 8 -->
+    <section class="bg-white p-6 rounded-lg shadow border-l-4 border-yellow-500">
+        <h2 class="text-xl font-bold mb-4">Category 3: The Lucky 8 (2 pts each)</h2>
+        <p class="text-sm text-gray-500 mb-4">Which 8 groups will have their 3rd-place team qualify for the Round of 32?</p>
+        <form method="POST">
+            <input type="hidden" name="category" value="cat3">
+            <div class="grid grid-cols-4 md:grid-cols-6 gap-2">
+                {% for group in groups.keys() %}
+                {% set g_letter = group.split(' ')[1] %}
+                <label class="flex items-center space-x-2 border p-2 rounded hover:bg-gray-50 cursor-pointer">
+                    <input type="checkbox" name="lucky_8" value="{{ g_letter }}" {% if predictions.cat3 and g_letter in predictions.cat3 %}checked{% endif %}>
+                    <span>{{ g_letter }}</span>
+                </label>
+                {% endfor %}
+            </div>
+            <button type="submit" {% if deadline_passed %}disabled{% endif %} class="mt-4 bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-yellow-700 disabled:opacity-50">Save Category 3</button>
+        </form>
+    </section>
+
+    <!-- Category 4: Rivalry Face-Offs -->
+    <section class="bg-white p-6 rounded-lg shadow border-l-4 border-red-600">
+        <h2 class="text-xl font-bold mb-4">Category 4: Rivalry Face-Offs (2 pts each)</h2>
+        <form method="POST">
+            <input type="hidden" name="category" value="cat4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {% for key, label in rivalries %}
+                <div class="flex items-center justify-between border-b pb-2">
+                    <span class="text-sm font-medium">{{ label }}</span>
+                    <select name="{{ key }}" class="border rounded p-1 text-sm">
+                        <option value="">Select Winner</option>
+                        {% for team in rivalry_teams[key] %}
+                        <option value="{{ team }}" {% if predictions.cat4 and predictions.cat4[key] == team %}selected{% endif %}>{{ team }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endfor %}
+            </div>
+            <button type="submit" {% if deadline_passed %}disabled{% endif %} class="mt-4 bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 disabled:opacity-50">Save Category 4</button>
+        </form>
+    </section>
+
+    <!-- Category 5: Golden Boot Ranking -->
+    <section class="bg-white p-6 rounded-lg shadow border-l-4 border-indigo-600">
+        <h2 class="text-xl font-bold mb-4">Category 5: Golden Boot Ranking (2 pts each)</h2>
+        <form method="POST">
+            <input type="hidden" name="category" value="cat5">
+            <div class="space-y-4 max-w-md">
+                {% for i in range(1, 6) %}
+                <div class="flex items-center space-x-4">
+                    <span class="font-bold w-8 text-center">{{ i }}.</span>
+                    <select name="player_{{ i }}" class="flex-1 border rounded p-2">
+                        <option value="">Select Player</option>
+                        {% for player in players %}
+                        <option value="{{ player }}" {% if predictions.cat5 and predictions.cat5[i-1] == player %}selected{% endif %}>{{ player }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endfor %}
+            </div>
+            <button type="submit" {% if deadline_passed %}disabled{% endif %} class="mt-4 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 disabled:opacity-50">Save Category 5</button>
+        </form>
+    </section>
+
+    <!-- Category 6: General Predictions -->
+    <section class="bg-white p-6 rounded-lg shadow border-l-4 border-purple-600">
+        <h2 class="text-xl font-bold mb-4">Category 6: General Predictions (5 pts each)</h2>
+        <form method="POST">
+            <input type="hidden" name="category" value="cat6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Overall Winner</label>
+                    <select name="winner" class="mt-1 block w-full border rounded-md p-2">
+                        <option value="">Select Team</option>
+                        {% for team in all_teams %}
+                        <option value="{{ team }}" {% if predictions.cat6 and predictions.cat6.winner == team %}selected{% endif %}>{{ team }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Runner-up</label>
+                    <select name="runner_up" class="mt-1 block w-full border rounded-md p-2">
+                        <option value="">Select Team</option>
+                        {% for team in all_teams %}
+                        <option value="{{ team }}" {% if predictions.cat6 and predictions.cat6.runner_up == team %}selected{% endif %}>{{ team }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">3rd Place</label>
+                    <select name="third_place" class="mt-1 block w-full border rounded-md p-2">
+                        <option value="">Select Team</option>
+                        {% for team in all_teams %}
+                        <option value="{{ team }}" {% if predictions.cat6 and predictions.cat6.third_place == team %}selected{% endif %}>{{ team }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Total Penalty Shootouts</label>
+                    <input type="number" name="penalty_shootouts" value="{{ predictions.cat6.penalty_shootouts if predictions.cat6 }}" class="mt-1 block w-full border rounded-md p-2">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Host nation success (Semi-Finals?)</label>
+                    <select name="host_success" class="mt-1 block w-full border rounded-md p-2">
+                        <option value="Yes" {% if predictions.cat6 and predictions.cat6.host_success == 'Yes' %}selected{% endif %}>Yes</option>
+                        <option value="No" {% if predictions.cat6 and predictions.cat6.host_success == 'No' %}selected{% endif %}>No</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Will any team lose all 3 games?</label>
+                    <select name="wipeout_exists" class="mt-1 block w-full border rounded-md p-2">
+                        <option value="Yes" {% if predictions.cat6 and predictions.cat6.wipeout_exists == 'Yes' %}selected{% endif %}>Yes</option>
+                        <option value="No" {% if predictions.cat6 and predictions.cat6.wipeout_exists == 'No' %}selected{% endif %}>No</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" {% if deadline_passed %}disabled{% endif %} class="mt-4 bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 disabled:opacity-50">Save Category 6</button>
+        </form>
+    </section>
+</div>
+{% endblock %}
