@@ -100,9 +100,12 @@ def predictions():
 
     user_preds = get_user_predictions(request.user.id)
     # Ensure all categories exist in the dict to prevent template errors
-    for cat in ['cat1', 'cat2', 'cat3', 'cat4', 'cat5', 'cat6']:
+    for cat in ['cat1', 'cat2', 'cat4', 'cat6']:
         if cat not in user_preds:
             user_preds[cat] = {}
+    for cat in ['cat3', 'cat5']:
+        if cat not in user_preds:
+            user_preds[cat] = []
             
     all_teams = get_all_teams()
     

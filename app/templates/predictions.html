@@ -156,7 +156,7 @@
                     <select name="player_{{ i }}" class="flex-1 border-gray-300 rounded-lg p-3 text-sm bg-white">
                         <option value="">Select Player</option>
                         {% for player in players %}
-                        <option value="{{ player }}" {% if predictions.cat5.get(i-1) == player %}selected{% endif %}>{{ player }}</option>
+                        <option value="{{ player }}" {% if predictions.cat5 is list and predictions.cat5|length >= i and predictions.cat5[i-1] == player %}selected{% endif %}>{{ player }}</option>
                         {% endfor %}
                     </select>
                 </div>
