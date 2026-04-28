@@ -77,6 +77,11 @@ def predictions():
             data = {rivalry[0]: request.form.get(rivalry[0]) for rivalry in RIVALRIES}
         elif category == 'cat5':
             data = [request.form.get(f'player_{i}') for i in range(1, 6)]
+            # Filter out empty values and check for duplicates
+            filled_data = [d for d in data if d]
+            if len(filled_data) != len(set(filled_data)):
+                flash('Duplicate players selected in Golden Boot ranking. Please select unique players.', 'error')
+                return redirect(url_for('main.predictions'))
         elif category == 'cat6':
             data = {
                 'winner': request.form.get('winner'),
