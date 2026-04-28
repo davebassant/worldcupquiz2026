@@ -1,0 +1,14 @@
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./instance:/app/instance
+    environment:
+      - FLASK_ENV=development
+      - SECRET_KEY=your-secret-key-change-me
+    restart: unless-stopped
+
+volumes:
+  instance_data:
