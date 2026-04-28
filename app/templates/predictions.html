@@ -101,8 +101,8 @@
             <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
                 {% for group in groups.keys() %}
                 {% set g_letter = group.split(' ')[1] %}
-                <label class="relative flex flex-col items-center justify-center p-3 border-2 rounded-xl cursor-pointer transition-all hover:bg-yellow-50 {% if predictions.cat3 and g_letter in predictions.cat3 %}border-yellow-500 bg-yellow-50{% else %}border-gray-100{% endif %}">
-                    <input type="checkbox" name="lucky_8" value="{{ g_letter }}" class="absolute opacity-0" {% if predictions.cat3 and g_letter in predictions.cat3 %}checked{% endif %}
+                <label class="relative flex flex-col items-center justify-center p-3 border-2 rounded-xl cursor-pointer transition-all hover:bg-yellow-50 {% if predictions.cat3 is iterable and g_letter in predictions.cat3 %}border-yellow-500 bg-yellow-50{% else %}border-gray-100{% endif %}">
+                    <input type="checkbox" name="lucky_8" value="{{ g_letter }}" class="absolute opacity-0" {% if predictions.cat3 is iterable and g_letter in predictions.cat3 %}checked{% endif %}
                            onchange="this.parentElement.classList.toggle('border-yellow-500'); this.parentElement.classList.toggle('bg-yellow-50'); this.parentElement.classList.toggle('border-gray-100')">
                     <span class="text-lg font-bold">{{ g_letter }}</span>
                 </label>
@@ -156,7 +156,7 @@
                     <select name="player_{{ i }}" class="flex-1 border-gray-300 rounded-lg p-3 text-sm bg-white">
                         <option value="">Select Player</option>
                         {% for player in players %}
-                        <option value="{{ player }}" {% if predictions.cat5 is list and predictions.cat5|length >= i and predictions.cat5[i-1] == player %}selected{% endif %}>{{ player }}</option>
+                        <option value="{{ player }}" {% if predictions.cat5 is iterable and predictions.cat5|length >= i and predictions.cat5[i-1] == player %}selected{% endif %}>{{ player }}</option>
                         {% endfor %}
                     </select>
                 </div>
