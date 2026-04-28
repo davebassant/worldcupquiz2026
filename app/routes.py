@@ -83,12 +83,24 @@ def predictions():
                 flash('Duplicate players selected in Golden Boot ranking. Please select unique players.', 'error')
                 return redirect(url_for('main.predictions'))
         elif category == 'cat6':
+            p32 = request.form.get('penalties_round_32')
+            prest = request.form.get('penalties_knockout_rest')
+            
+            try:
+                if p32 and not (0 <= int(p32) <= 16):
+                    raise ValueError
+                if prest and not (0 <= int(prest) <= 16):
+                    raise ValueError
+            except (ValueError, TypeError):
+                flash('Shoot-out numbers must be between 0 and 16.', 'error')
+                return redirect(url_for('main.predictions'))
+
             data = {
                 'winner': request.form.get('winner'),
                 'runner_up': request.form.get('runner_up'),
                 'third_place': request.form.get('third_place'),
-                'penalties_round_32': request.form.get('penalties_round_32'),
-                'penalties_knockout_rest': request.form.get('penalties_knockout_rest'),
+                'penalties_round_32': p32,
+                'penalties_knockout_rest': prest,
                 'host_success': request.form.get('host_success'),
                 'wipeout_exists': request.form.get('wipeout_exists')
             }

@@ -237,7 +237,7 @@
                         {% endfor %}
                     </select>
                     {% elif type == 'number' %}
-                    <input type="number" name="{{ key }}" value="{{ predictions.cat6.get(key) or '' }}" class="w-full border-gray-300 rounded p-3 bg-white text-sm">
+                    <input type="number" name="{{ key }}" min="0" max="16" value="{{ predictions.cat6.get(key) or '' }}" class="w-full border-gray-300 rounded p-3 bg-white text-sm" required>
                     {% elif type == 'bool' %}
                     <select name="{{ key }}" class="w-full border-gray-300 rounded p-3 bg-white text-sm">
                         <option value="Yes" {% if predictions.cat6.get(key) == 'Yes' %}selected{% endif %}>Yes</option>
