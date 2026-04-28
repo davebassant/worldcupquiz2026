@@ -82,7 +82,8 @@ def predictions():
                 'winner': request.form.get('winner'),
                 'runner_up': request.form.get('runner_up'),
                 'third_place': request.form.get('third_place'),
-                'penalty_shootouts': request.form.get('penalty_shootouts'),
+                'penalties_round_32': request.form.get('penalties_round_32'),
+                'penalties_knockout_rest': request.form.get('penalties_knockout_rest'),
                 'host_success': request.form.get('host_success'),
                 'wipeout_exists': request.form.get('wipeout_exists')
             }

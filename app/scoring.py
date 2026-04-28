@@ -75,10 +75,14 @@ def calculate_category_5_golden_boot_ranking(predicted_rank: List[str], actual_r
 def calculate_category_6_general_predictions(predictions: Dict[str, Any], actuals: Dict[str, Any]) -> int:
     """
     Category 6: General Predictions (5 pts each)
-    Winner, Runner-up, 3rd Place, total penalty shootouts, host nation success, group stage wipeouts
+    Winner, Runner-up, 3rd Place, Round of 32 penalties, Remaining knockout penalties, host nation success, group stage wipeouts
     """
     score = 0
-    keys = ['winner', 'runner_up', 'third_place', 'penalty_shootouts', 'host_success', 'wipeout_exists']
+    keys = [
+        'winner', 'runner_up', 'third_place', 
+        'penalties_round_32', 'penalties_knockout_rest', 
+        'host_success', 'wipeout_exists'
+    ]
     for key in keys:
         if key in predictions and key in actuals and predictions[key] == actuals[key]:
             score += 5
