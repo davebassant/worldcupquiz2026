@@ -8,7 +8,7 @@ def calculate_category_1_match_totals(predictions: Dict[str, str], actuals: Dict
     score = 0
     # Expected keys: 'most_goals_scored', 'fewest_goals_scored', 'most_goals_conceded', 'fewest_goals_conceded'
     for key in ['most_goals_scored', 'fewest_goals_scored', 'most_goals_conceded', 'fewest_goals_conceded']:
-        if key in predictions and key in actuals and predictions[key] == actuals[key]:
+        if key in predictions and key in actuals and predictions[key] == actuals[key] and predictions[key]:
             score += 5
     return score
 
@@ -25,12 +25,12 @@ def calculate_category_2_group_qualification(predictions: Dict[str, List[str]], 
             
         # 2 points for each correct team progressing (Top 2)
         for team in predicted_teams:
-            if team in actual_teams:
+            if team and team in actual_teams:
                 score += 2
         
         # 1 point bonus for predicting exact 1st/2nd place order
         if len(predicted_teams) >= 2 and len(actual_teams) >= 2:
-            if predicted_teams[0] == actual_teams[0] and predicted_teams[1] == actual_teams[1]:
+            if predicted_teams[0] and predicted_teams[1] and predicted_teams[0] == actual_teams[0] and predicted_teams[1] == actual_teams[1]:
                 score += 1
     return score
 
@@ -41,7 +41,7 @@ def calculate_category_3_lucky_8(predicted_groups: List[str], actual_qualifying_
     """
     score = 0
     for group in predicted_groups:
-        if group in actual_qualifying_groups:
+        if group and group in actual_qualifying_groups:
             score += 2
     return score
 
@@ -56,7 +56,7 @@ def calculate_category_4_rivalry_faceoffs(predictions: Dict[str, str], actuals: 
         'england_vs_scotland', 'france_vs_norway', 'spain_vs_portugal'
     ]
     for rivalry in rivalries:
-        if rivalry in predictions and rivalry in actuals and predictions[rivalry] == actuals[rivalry]:
+        if rivalry in predictions and rivalry in actuals and predictions[rivalry] == actuals[rivalry] and predictions[rivalry]:
             score += 2
     return score
 
@@ -68,7 +68,7 @@ def calculate_category_5_golden_boot_ranking(predicted_rank: List[str], actual_r
     score = 0
     # Both lists should be size 5
     for i in range(min(len(predicted_rank), len(actual_rank))):
-        if predicted_rank[i] == actual_rank[i]:
+        if predicted_rank[i] == actual_rank[i] and predicted_rank[i]:
             score += 2
     return score
 
@@ -84,7 +84,7 @@ def calculate_category_6_general_predictions(predictions: Dict[str, Any], actual
         'host_success', 'wipeout_exists'
     ]
     for key in keys:
-        if key in predictions and key in actuals and predictions[key] == actuals[key]:
+        if key in predictions and key in actuals and predictions[key] == actuals[key] and predictions[key] not in [None, ""]:
             score += 5
     return score
 

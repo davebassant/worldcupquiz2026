@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin: Tournament Actuals - World Cup 2026{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">Admin: Tournament Actuals</h1>
+    <p class="text-gray-600">
+        Enter the official tournament results here. These will be used to calculate everyone's scores.
+    </p>
+</div>
+
+<div class="space-y-6">
+    <!-- Category 1: Match Totals -->
+    <section class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-200 border-l-4 border-blue-600">
+        <h2 class="text-xl font-bold mb-4 flex items-center">
+            <span class="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">Cat 1</span>
+            Match Totals (Group Stage Only)
+            <span class="ml-auto text-sm font-normal text-blue-600">5 pts each</span>
+        </h2>
+        <form method="POST">
+            <input type="hidden" name="category" value="cat1">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {% for key, label in [
+                    ('most_goals_scored', 'Team with MOST goals scored'),
+                    ('fewest_goals_scored', 'Team with FEWEST goals scored'),
+                    ('most_goals_conceded', 'Team with MOST goals conceded'),
+                    ('fewest_goals_conceded', 'Team with FEWEST goals conceded')
+                ] %}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ label }}</label>
+                    <select name="{{ key }}" class="block w-full border-gray-300 rounded-lg p-3 bg-gray-50 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Select Team</option>
+                        {% for team in all_teams %}
+                        <option value="{{ team }}" {% if actuals.cat1.get(key) == team %}selected{% endif %}>{{ team }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endfor %}
+            </div>
+            <button type="submit"  class="w-full md:w-auto mt-6 bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 active:transform active:scale-95 transition-all disabled:opacity-50">
+                Save Totals
+            </button>
+        </form>
+    </section>
+
+    <!-- Category 2: Group Qualification -->
+    <section class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-200 border-l-4 border-green-600">
+        <h2 class="text-xl font-bold mb-4 flex items-center">
+            <span class="bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">Cat 2</span>
+            Group Qualification
+            <span class="ml-auto text-sm font-normal text-green-600 text-right">2 pts per team<br class="sm:hidden">+ 1 pt bonus</span>
+        </h2>
+        <form method="POST">
+            <input type="hidden" name="category" value="cat2">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for group, teams in groups.items() %}
+                <div class="border rounded-lg bg-gray-50 p-4">
+                    <h3 class="font-bold text-gray-800 mb-3 border-b pb-1">{{ group }}</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <span class="text-[10px] uppercase font-bold text-gray-400 block mb-1">1st Place</span>
+                            <select name="{{ group }}_1" class="w-full border-gray-300 rounded-md p-2 text-sm bg-white">
+                                <option value="">Select 1st</option>
+                                {% for team in teams %}
+                                <option value="{{ team }}" {% if actuals.cat2.get(group) and actuals.cat2.get(group)[0] == team %}selected{% endif %}>{{ team }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div>
+                            <span class="text-[10px] uppercase font-bold text-gray-400 block mb-1">2nd Place</span>
+                            <select name="{{ group }}_2" class="w-full border-gray-300 rounded-md p-2 text-sm bg-white">
+                                <option value="">Select 2nd</option>
+                                {% for team in teams %}
+                                <option value="{{ team }}" {% if actuals.cat2.get(group) and actuals.cat2.get(group)[1] == team %}selected{% endif %}>{{ team }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button type="submit"  class="w-full md:w-auto mt-6 bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 active:transform active:scale-95 transition-all disabled:opacity-50">
+                Save Groups
+            </button>
+        </form>
+    </section>
+
+    <!-- Category 3: The Lucky 8 -->
+    <section class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-200 border-l-4 border-yellow-500">
+        <h2 class="text-xl font-bold mb-2 flex items-center">
+            <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">Cat 3</span>
+            The Lucky 8
+            <span class="ml-auto text-sm font-normal text-yellow-600">2 pts each</span>
+        </h2>
+        <p class="text-sm text-gray-500 mb-4 italic">Select the 8 groups whose 3rd-place team will qualify.</p>
+        <form method="POST">
+            <input type="hidden" name="category" value="cat3">
+            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+                {% for group in groups.keys() %}
+                {% set g_letter = group.split(' ')[1] %}
+                <label class="relative flex flex-col items-center justify-center p-3 border-2 rounded-xl cursor-pointer transition-all hover:bg-yellow-50 {% if actuals.cat3 is iterable and g_letter in actuals.cat3 %}border-yellow-500 bg-yellow-50{% else %}border-gray-100{% endif %}">
+                    <input type="checkbox" name="lucky_8" value="{{ g_letter }}" class="absolute opacity-0" {% if actuals.cat3 is iterable and g_letter in actuals.cat3 %}checked{% endif %}
+                           onchange="this.parentElement.classList.toggle('border-yellow-500'); this.parentElement.classList.toggle('bg-yellow-50'); this.parentElement.classList.toggle('border-gray-100')">
+                    <span class="text-lg font-bold">{{ g_letter }}</span>
+                </label>
+                {% endfor %}
+            </div>
+            <button type="submit"  class="w-full md:w-auto mt-6 bg-yellow-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-yellow-700 active:transform active:scale-95 transition-all disabled:opacity-50">
+                Save Lucky 8
+            </button>
+        </form>
+    </section>
+
+    <!-- Category 4: Rivalry Face-Offs -->
+    <section class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-200 border-l-4 border-red-600">
+        <h2 class="text-xl font-bold mb-2 flex items-center">
+            <span class="bg-red-100 text-red-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">Cat 4</span>
+            Rivalry Face-Offs
+            <span class="ml-auto text-sm font-normal text-red-600">2 pts each</span>
+        </h2>
+        <p class="text-sm text-gray-500 mb-4 italic">Predict which team will progress the furthest in the tournament.</p>
+        <form method="POST">
+            <input type="hidden" name="category" value="cat4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {% for key, label in rivalries %}
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 border rounded-lg bg-gray-50">
+                    <span class="text-sm font-bold text-gray-700 mb-2 sm:mb-0">{{ label }}</span>
+                    <select name="{{ key }}" class="w-full sm:w-auto border-gray-300 rounded p-2 text-sm bg-white">
+                        <option value="">Select Winner</option>
+                        {% for team in rivalry_teams[key] %}
+                        <option value="{{ team }}" {% if actuals.cat4.get(key) == team %}selected{% endif %}>{{ team }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endfor %}
+            </div>
+            <button type="submit"  class="w-full md:w-auto mt-6 bg-red-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-red-700 active:transform active:scale-95 transition-all disabled:opacity-50">
+                Save Rivalries
+            </button>
+        </form>
+    </section>
+
+    <!-- Category 5: Golden Boot Ranking -->
+    <section class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-200 border-l-4 border-indigo-600">
+        <h2 class="text-xl font-bold mb-2 flex items-center">
+            <span class="bg-indigo-100 text-indigo-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">Cat 5</span>
+            Golden Boot Ranking
+            <span class="ml-auto text-sm font-normal text-indigo-600">2 pts per position</span>
+        </h2>
+        <p class="text-sm text-gray-500 mb-4 italic">Rank these players in order of most goals scored (1st = most goals).</p>
+        <form method="POST" id="cat5-form">
+            <input type="hidden" name="category" value="cat5">
+            <div class="space-y-3 max-w-lg">
+                {% for i in range(1, 6) %}
+                <div class="flex items-center bg-gray-50 p-2 rounded-lg border">
+                    <span class="flex items-center justify-center bg-indigo-600 text-white font-bold rounded-full w-8 h-8 mr-3 text-sm">{{ i }}</span>
+                    <select name="player_{{ i }}" class="cat5-select flex-1 border-gray-300 rounded-lg p-3 text-sm bg-white">
+                        <option value="">Select Player</option>
+                        {% for player in players %}
+                        <option value="{{ player }}" {% if actuals.cat5 is iterable and actuals.cat5|length >= i and actuals.cat5[i-1] == player %}selected{% endif %}>{{ player }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endfor %}
+            </div>
+            <div id="cat5-error" class="hidden mt-2 text-sm text-red-600 font-bold">Please select 5 unique players. Duplicates are not allowed.</div>
+            <button type="submit" id="cat5-submit"  class="w-full md:w-auto mt-6 bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 active:transform active:scale-95 transition-all disabled:opacity-50">
+                Save Ranking
+            </button>
+        </form>
+
+        <script>
+            const cat5Form = document.getElementById('cat5-form');
+            const cat5Selects = document.querySelectorAll('.cat5-select');
+            const cat5Error = document.getElementById('cat5-error');
+            const cat5Submit = document.getElementById('cat5-submit');
+
+            function validateCat5() {
+                const values = Array.from(cat5Selects).map(s => s.value).filter(v => v !== "");
+                const uniqueValues = new Set(values);
+                
+                if (values.length !== uniqueValues.size) {
+                    cat5Error.classList.remove('hidden');
+                    cat5Submit.disabled = true;
+                    return false;
+                } else {
+                    cat5Error.classList.add('hidden');
+                    cat5Submit.disabled = false;
+                    return true;
+                }
+            }
+
+            cat5Selects.forEach(select => {
+                select.addEventListener('change', validateCat5);
+            });
+
+            cat5Form.addEventListener('submit', (e) => {
+                if (!validateCat5()) {
+                    e.preventDefault();
+                }
+            });
+        </script>
+    </section>
+
+    <!-- Category 6: General Actuals -->
+    <section class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-200 border-l-4 border-purple-600">
+        <h2 class="text-xl font-bold mb-4 flex items-center">
+            <span class="bg-purple-100 text-purple-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">Cat 6</span>
+            General Actuals
+            <span class="ml-auto text-sm font-normal text-purple-600">5 pts each</span>
+        </h2>
+        <form method="POST">
+            <input type="hidden" name="category" value="cat6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {% for key, label, type in [
+                    ('winner', 'Overall Winner', 'select'),
+                    ('runner_up', 'Runner-up', 'select'),
+                    ('third_place', '3rd Place', 'select'),
+                    ('penalties_round_32', 'Shoot-outs in Round of 32', 'number'),
+                    ('penalties_knockout_rest', 'Shoot-outs in other KOs', 'number'),
+                    ('host_success', 'Will any host (USA, MEX, CAN) reach Semi-Finals?', 'bool'),
+                    ('wipeout_exists', 'Any team to lose all 3 group games?', 'bool')
+                ] %}
+                <div class="bg-gray-50 p-3 rounded-lg border">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">{{ label }}</label>
+                    {% if type == 'select' %}
+                    <select name="{{ key }}" class="w-full border-gray-300 rounded p-3 bg-white text-sm">
+                        <option value="">Select Team</option>
+                        {% for team in all_teams %}
+                        <option value="{{ team }}" {% if actuals.cat6.get(key) == team %}selected{% endif %}>{{ team }}</option>
+                        {% endfor %}
+                    </select>
+                    {% elif type == 'number' %}
+                    <input type="number" name="{{ key }}" min="0" max="16" value="{{ actuals.cat6.get(key) or '' }}" class="w-full border-gray-300 rounded p-3 bg-white text-sm" required>
+                    {% elif type == 'bool' %}
+                    <select name="{{ key }}" class="w-full border-gray-300 rounded p-3 bg-white text-sm">
+                        <option value="Yes" {% if actuals.cat6.get(key) == 'Yes' %}selected{% endif %}>Yes</option>
+                        <option value="No" {% if actuals.cat6.get(key) == 'No' %}selected{% endif %}>No</option>
+                    </select>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <button type="submit"  class="w-full md:w-auto mt-6 bg-purple-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-purple-700 active:transform active:scale-95 transition-all disabled:opacity-50">
+                Save General Picks
+            </button>
+        </form>
+    </section>
+</div>
+{% endblock %}

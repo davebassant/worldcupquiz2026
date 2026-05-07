@@ -1,8 +1,10 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session, jsonify
-from .models import db, User, Prediction
+from datetime import datetime
+from .models import db, User, Prediction, TournamentActual
 from .user_management import authenticate_user, get_all_usernames
 from .prediction_management import get_user_predictions, save_prediction, is_deadline_passed, get_all_teams
-from .constants import GROUPS, RIVALRIES, GOLDEN_BOOT_PLAYERS, RIVALRY_TEAMS, DEADLINE
+from .constants import GROUPS, RIVALRIES, GOLDEN_BOOT_PLAYERS, RIVALRY_TEAMS, DEADLINE, TOURNAMENT_END
+from .scoring import calculate_total_score
 
 bp = Blueprint('main', __name__)
 
@@ -16,7 +18,8 @@ def load_logged_in_user():
 
 @bp.app_context_processor
 def inject_deadline():
-    return {'deadline_passed': is_deadline_passed(), 'deadline': DEADLINE}
+    tournament_ended = datetime.utcnow() > TOURNAMENT_END
+    return {'deadline_passed': is_deadline_passed(), 'deadline': DEADLINE, 'tournament_ended': tournament_ended}
 
 @bp.route('/')
 def index():
@@ -138,4 +141,99 @@ def predictions():
 
 @bp.route('/scoreboard')
 def scoreboard():
-    return render_template('scoreboard.html', current_user=request.user)
+    users = User.query.all()
+    actuals = TournamentActual.query.all()
+    tournament_actuals = {a.category: a.actual_data for a in actuals}
+
+    scoreboard_data = []
+    for user in users:
+        user_preds = get_user_predictions(user.id)
+        scores = calculate_total_score(user_preds, tournament_actuals)
+        scoreboard_data.append({
+            'username': user.username,
+            'scores': scores
+        })
+
+    # Sort descending by total score
+    scoreboard_data.sort(key=lambda x: x['scores']['total'], reverse=True)
+
+    if request.headers.get('HX-Request'):
+        return render_template('partials/scoreboard_table.html', scoreboard_data=scoreboard_data)
+
+    return render_template('scoreboard.html', current_user=request.user, scoreboard_data=scoreboard_data)
+
+@bp.route('/admin/actuals', methods=['GET', 'POST'])
+def admin_actuals():
+    if not request.user or not request.user.is_admin:
+        flash('Unauthorized access.', 'error')
+        return redirect(url_for('main.index'))
+
+    if request.method == 'POST':
+        category = request.form.get('category')
+        
+        # Similar data gathering logic to predictions
+        if category == 'cat1':
+            data = {
+                'most_goals_scored': request.form.get('most_goals_scored'),
+                'fewest_goals_scored': request.form.get('fewest_goals_scored'),
+                'most_goals_conceded': request.form.get('most_goals_conceded'),
+                'fewest_goals_conceded': request.form.get('fewest_goals_conceded')
+            }
+        elif category == 'cat2':
+            data = {}
+            for group in GROUPS.keys():
+                data[group] = [request.form.get(f'{group}_1'), request.form.get(f'{group}_2')]
+        elif category == 'cat3':
+            data = request.form.getlist('lucky_8')
+        elif category == 'cat4':
+            data = {rivalry[0]: request.form.get(rivalry[0]) for rivalry in RIVALRIES}
+        elif category == 'cat5':
+            data = [request.form.get(f'player_{i}') for i in range(1, 6)]
+        elif category == 'cat6':
+            p32 = request.form.get('penalties_round_32')
+            prest = request.form.get('penalties_knockout_rest')
+            data = {
+                'winner': request.form.get('winner'),
+                'runner_up': request.form.get('runner_up'),
+                'third_place': request.form.get('third_place'),
+                'penalties_round_32': p32,
+                'penalties_knockout_rest': prest,
+                'host_success': request.form.get('host_success'),
+                'wipeout_exists': request.form.get('wipeout_exists')
+            }
+        else:
+            flash('Invalid category.', 'error')
+            return redirect(url_for('main.admin_actuals'))
+
+        actual = TournamentActual.query.filter_by(category=category).first()
+        if actual:
+            actual.actual_data = data
+        else:
+            actual = TournamentActual(category=category, actual_data=data)
+            db.session.add(actual)
+        
+        db.session.commit()
+        flash(f'Actuals for Category {category[3:]} saved successfully!', 'success')
+        return redirect(url_for('main.admin_actuals'))
+
+    actuals_db = TournamentActual.query.all()
+    tournament_actuals = {a.category: a.actual_data for a in actuals_db}
+
+    # Ensure all categories exist in dict
+    for cat in ['cat1', 'cat2', 'cat4', 'cat6']:
+        if cat not in tournament_actuals:
+            tournament_actuals[cat] = {}
+    for cat in ['cat3', 'cat5']:
+        if cat not in tournament_actuals:
+            tournament_actuals[cat] = []
+
+    all_teams = get_all_teams()
+
+    return render_template('admin_actuals.html',
+                           current_user=request.user,
+                           actuals=tournament_actuals,
+                           groups=GROUPS,
+                           rivalries=RIVALRIES,
+                           rivalry_teams=RIVALRY_TEAMS,
+                           players=GOLDEN_BOOT_PLAYERS,
+                           all_teams=all_teams)

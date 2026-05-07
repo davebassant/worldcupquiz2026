@@ -6,6 +6,7 @@
     <title>{% block title %}2026 World Cup Family Predictor{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
         [x-cloak] { display: none !important; }
     </style>
@@ -23,6 +24,9 @@
                     <a href="/" class="hover:bg-blue-500 px-3 py-2 rounded-md text-sm font-medium">Home</a>
                     <a href="/predictions" class="hover:bg-blue-500 px-3 py-2 rounded-md text-sm font-medium">Predictions</a>
                     <a href="/scoreboard" class="hover:bg-blue-500 px-3 py-2 rounded-md text-sm font-medium">Scoreboard</a>
+                    {% if current_user and current_user.is_admin %}
+                        <a href="/admin/actuals" class="hover:bg-red-500 bg-red-600 px-3 py-2 rounded-md text-sm font-medium text-white">Admin: Actuals</a>
+                    {% endif %}
                     {% if current_user %}
                         <span class="ml-4 text-blue-100">{{ current_user.username }}</span>
                         <a href="/logout" class="bg-blue-700 hover:bg-blue-800 px-3 py-2 rounded-md text-sm font-medium">Logout</a>
@@ -47,6 +51,9 @@
             <a href="/" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-blue-600">Home</a>
             <a href="/predictions" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-blue-600">Predictions</a>
             <a href="/scoreboard" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-blue-600">Scoreboard</a>
+            {% if current_user and current_user.is_admin %}
+                <a href="/admin/actuals" class="block px-3 py-2 rounded-md text-base font-medium bg-red-600 hover:bg-red-700 text-white">Admin: Actuals</a>
+            {% endif %}
             {% if current_user %}
                 <div class="border-t border-blue-500 mt-2 pt-2">
                     <span class="block px-3 py-2 text-blue-200 text-sm">Logged in as: {{ current_user.username }}</span>

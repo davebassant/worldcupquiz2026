@@ -7,7 +7,7 @@ services:
       - ./instance:/app/instance
     environment:
       - FLASK_ENV=development
-      - SECRET_KEY=your-secret-key-change-me
+      - SECRET_KEY=${SECRET_KEY}
     restart: unless-stopped
 
   tunnel:

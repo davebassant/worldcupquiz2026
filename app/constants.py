@@ -4,6 +4,9 @@ from datetime import datetime
 # BST is UTC+1. So 19:00 UTC.
 DEADLINE = datetime(2026, 6, 11, 19, 0, 0)
 
+# Tournament End: July 19th 2026 23:59 BST (22:59 UTC)
+TOURNAMENT_END = datetime(2026, 7, 19, 22, 59, 0)
+
 GROUPS = {
     'Group A': ['Mexico', 'South Korea', 'Denmark', 'Mali'],
     'Group B': ['Canada', 'Belgium', 'Chile', 'Oman'],
