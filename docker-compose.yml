@@ -7,8 +7,15 @@ services:
       - ./instance:/app/instance
     environment:
       - FLASK_ENV=development
-      - SECRET_KEY=your-secret-key-change-me
+      - SECRET_KEY=${SECRET_KEY}
     restart: unless-stopped
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
 
 volumes:
   instance_data:

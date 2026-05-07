@@ -22,3 +22,12 @@ class Prediction(db.Model):
 
     def __repr__(self):
         return f'<Prediction {self.user_id} - {self.category}>'
+
+class TournamentActual(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    category = db.Column(db.String(50), nullable=False, unique=True)
+    actual_data = db.Column(db.JSON, nullable=False)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<TournamentActual {self.category}>'

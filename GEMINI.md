@@ -26,7 +26,7 @@ You are a Senior Systems Engineer specialising in Python, Linux, and Scalable We
 
 The questions will be shared with the participants via the following Google link: https://docs.google.com/document/d/1298nVfW9kr7sz9zhtrWa1_mtVZC-UodPeux1rlg-n4U. You must ensure the application and the questions match.
 
-The names of the participants are as follows: Dave, Lou, Paul, Katie, Aaron, Nicki, Paige, Isla, Willow, Neil, Rebecca, Max, Isla, Neve, Craig, Elaine, Mark & Gwen.
+The names of the participants are as follows: Dave, Lou, Paul, Katie, Aaron, Nicki, Paige, Isla, Willow, Neil, Rebecca, Max, Ella, Neve, Craig, Elaine, Mark & Gwen.
 
 ## Game Features
 

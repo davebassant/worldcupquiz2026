@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Scoreboard - World Cup 2026{% endblock %}
+
+{% block content %}
+<div class="mb-8 flex flex-col md:flex-row justify-between md:items-end gap-4">
+    <div>
+        <h1 class="text-3xl font-bold text-gray-900">Scoreboard</h1>
+        <p class="text-gray-600 mt-1">Live rankings based on tournament results.</p>
+    </div>
+    <div class="text-sm text-gray-500 bg-white px-3 py-1.5 rounded-full shadow-sm border border-gray-200 inline-flex items-center">
+        {% if tournament_ended %}
+            <span class="w-2 h-2 rounded-full bg-gray-400 mr-2"></span> Final Results
+        {% else %}
+            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse mr-2"></span> Auto-updates every 10 mins
+        {% endif %}
+    </div>
+</div>
+
+<div class="space-y-6">
+    {% if not tournament_ended %}
+        <div id="scoreboard-container" 
+             hx-get="/scoreboard" 
+             hx-trigger="every 10m" 
+             hx-select="#scoreboard-table" 
+             hx-swap="innerHTML">
+            {% include 'partials/scoreboard_table.html' %}
+        </div>
+    {% else %}
+        <div id="scoreboard-container">
+            {% include 'partials/scoreboard_table.html' %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

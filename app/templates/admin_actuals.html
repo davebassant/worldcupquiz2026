@@ -1,17 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}My Predictions - World Cup 2026{% endblock %}
+{% block title %}Admin: Tournament Actuals - World Cup 2026{% endblock %}
 
 {% block content %}
 <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900">My Predictions</h1>
+    <h1 class="text-3xl font-bold text-gray-900">Admin: Tournament Actuals</h1>
     <p class="text-gray-600">
-        {% if deadline_passed %}
-            <span class="text-red-600 font-bold">The deadline has passed.</span> Predictions are now locked.
-        {% else %}
-            Deadline: <span class="font-bold">{{ deadline.strftime('%B %d, %Y at %H:%M %Z') }}</span>. 
-            You can edit your picks until the first game starts.
-        {% endif %}
+        Enter the official tournament results here. These will be used to calculate everyone's scores.
     </p>
 </div>
 
@@ -37,13 +32,13 @@
                     <select name="{{ key }}" class="block w-full border-gray-300 rounded-lg p-3 bg-gray-50 focus:ring-blue-500 focus:border-blue-500">
                         <option value="">Select Team</option>
                         {% for team in all_teams %}
-                        <option value="{{ team }}" {% if predictions.cat1.get(key) == team %}selected{% endif %}>{{ team }}</option>
+                        <option value="{{ team }}" {% if actuals.cat1.get(key) == team %}selected{% endif %}>{{ team }}</option>
                         {% endfor %}
                     </select>
                 </div>
                 {% endfor %}
             </div>
-            <button type="submit" {% if deadline_passed %}disabled{% endif %} class="w-full md:w-auto mt-6 bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 active:transform active:scale-95 transition-all disabled:opacity-50">
+            <button type="submit"  class="w-full md:w-auto mt-6 bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 active:transform active:scale-95 transition-all disabled:opacity-50">
                 Save Totals
             </button>
         </form>
@@ -68,7 +63,7 @@
                             <select name="{{ group }}_1" class="w-full border-gray-300 rounded-md p-2 text-sm bg-white">
                                 <option value="">Select 1st</option>
                                 {% for team in teams %}
-                                <option value="{{ team }}" {% if predictions.cat2.get(group) and predictions.cat2.get(group)[0] == team %}selected{% endif %}>{{ team }}</option>
+                                <option value="{{ team }}" {% if actuals.cat2.get(group) and actuals.cat2.get(group)[0] == team %}selected{% endif %}>{{ team }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -77,7 +72,7 @@
                             <select name="{{ group }}_2" class="w-full border-gray-300 rounded-md p-2 text-sm bg-white">
                                 <option value="">Select 2nd</option>
                                 {% for team in teams %}
-                                <option value="{{ team }}" {% if predictions.cat2.get(group) and predictions.cat2.get(group)[1] == team %}selected{% endif %}>{{ team }}</option>
+                                <option value="{{ team }}" {% if actuals.cat2.get(group) and actuals.cat2.get(group)[1] == team %}selected{% endif %}>{{ team }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -85,7 +80,7 @@
                 </div>
                 {% endfor %}
             </div>
-            <button type="submit" {% if deadline_passed %}disabled{% endif %} class="w-full md:w-auto mt-6 bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 active:transform active:scale-95 transition-all disabled:opacity-50">
+            <button type="submit"  class="w-full md:w-auto mt-6 bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 active:transform active:scale-95 transition-all disabled:opacity-50">
                 Save Groups
             </button>
         </form>
@@ -104,14 +99,14 @@
             <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
                 {% for group in groups.keys() %}
                 {% set g_letter = group.split(' ')[1] %}
-                <label class="relative flex flex-col items-center justify-center p-3 border-2 rounded-xl cursor-pointer transition-all hover:bg-yellow-50 {% if predictions.cat3 is iterable and g_letter in predictions.cat3 %}border-yellow-500 bg-yellow-50{% else %}border-gray-100{% endif %}">
-                    <input type="checkbox" name="lucky_8" value="{{ g_letter }}" class="absolute opacity-0" {% if predictions.cat3 is iterable and g_letter in predictions.cat3 %}checked{% endif %}
+                <label class="relative flex flex-col items-center justify-center p-3 border-2 rounded-xl cursor-pointer transition-all hover:bg-yellow-50 {% if actuals.cat3 is iterable and g_letter in actuals.cat3 %}border-yellow-500 bg-yellow-50{% else %}border-gray-100{% endif %}">
+                    <input type="checkbox" name="lucky_8" value="{{ g_letter }}" class="absolute opacity-0" {% if actuals.cat3 is iterable and g_letter in actuals.cat3 %}checked{% endif %}
                            onchange="this.parentElement.classList.toggle('border-yellow-500'); this.parentElement.classList.toggle('bg-yellow-50'); this.parentElement.classList.toggle('border-gray-100')">
                     <span class="text-lg font-bold">{{ g_letter }}</span>
                 </label>
                 {% endfor %}
             </div>
-            <button type="submit" {% if deadline_passed %}disabled{% endif %} class="w-full md:w-auto mt-6 bg-yellow-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-yellow-700 active:transform active:scale-95 transition-all disabled:opacity-50">
+            <button type="submit"  class="w-full md:w-auto mt-6 bg-yellow-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-yellow-700 active:transform active:scale-95 transition-all disabled:opacity-50">
                 Save Lucky 8
             </button>
         </form>
@@ -134,13 +129,13 @@
                     <select name="{{ key }}" class="w-full sm:w-auto border-gray-300 rounded p-2 text-sm bg-white">
                         <option value="">Select Winner</option>
                         {% for team in rivalry_teams[key] %}
-                        <option value="{{ team }}" {% if predictions.cat4.get(key) == team %}selected{% endif %}>{{ team }}</option>
+                        <option value="{{ team }}" {% if actuals.cat4.get(key) == team %}selected{% endif %}>{{ team }}</option>
                         {% endfor %}
                     </select>
                 </div>
                 {% endfor %}
             </div>
-            <button type="submit" {% if deadline_passed %}disabled{% endif %} class="w-full md:w-auto mt-6 bg-red-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-red-700 active:transform active:scale-95 transition-all disabled:opacity-50">
+            <button type="submit"  class="w-full md:w-auto mt-6 bg-red-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-red-700 active:transform active:scale-95 transition-all disabled:opacity-50">
                 Save Rivalries
             </button>
         </form>
@@ -163,14 +158,14 @@
                     <select name="player_{{ i }}" class="cat5-select flex-1 border-gray-300 rounded-lg p-3 text-sm bg-white">
                         <option value="">Select Player</option>
                         {% for player in players %}
-                        <option value="{{ player }}" {% if predictions.cat5 is iterable and predictions.cat5|length >= i and predictions.cat5[i-1] == player %}selected{% endif %}>{{ player }}</option>
+                        <option value="{{ player }}" {% if actuals.cat5 is iterable and actuals.cat5|length >= i and actuals.cat5[i-1] == player %}selected{% endif %}>{{ player }}</option>
                         {% endfor %}
                     </select>
                 </div>
                 {% endfor %}
             </div>
             <div id="cat5-error" class="hidden mt-2 text-sm text-red-600 font-bold">Please select 5 unique players. Duplicates are not allowed.</div>
-            <button type="submit" id="cat5-submit" {% if deadline_passed %}disabled{% endif %} class="w-full md:w-auto mt-6 bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 active:transform active:scale-95 transition-all disabled:opacity-50">
+            <button type="submit" id="cat5-submit"  class="w-full md:w-auto mt-6 bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 active:transform active:scale-95 transition-all disabled:opacity-50">
                 Save Ranking
             </button>
         </form>
@@ -191,7 +186,7 @@
                     return false;
                 } else {
                     cat5Error.classList.add('hidden');
-                    cat5Submit.disabled = {{ 'true' if deadline_passed else 'false' }};
+                    cat5Submit.disabled = false;
                     return true;
                 }
             }
@@ -208,11 +203,11 @@
         </script>
     </section>
 
-    <!-- Category 6: General Predictions -->
+    <!-- Category 6: General Actuals -->
     <section class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-200 border-l-4 border-purple-600">
         <h2 class="text-xl font-bold mb-4 flex items-center">
             <span class="bg-purple-100 text-purple-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">Cat 6</span>
-            General Predictions
+            General Actuals
             <span class="ml-auto text-sm font-normal text-purple-600">5 pts each</span>
         </h2>
         <form method="POST">
@@ -233,21 +228,21 @@
                     <select name="{{ key }}" class="w-full border-gray-300 rounded p-3 bg-white text-sm">
                         <option value="">Select Team</option>
                         {% for team in all_teams %}
-                        <option value="{{ team }}" {% if predictions.cat6.get(key) == team %}selected{% endif %}>{{ team }}</option>
+                        <option value="{{ team }}" {% if actuals.cat6.get(key) == team %}selected{% endif %}>{{ team }}</option>
                         {% endfor %}
                     </select>
                     {% elif type == 'number' %}
-                    <input type="number" name="{{ key }}" min="0" max="16" value="{{ predictions.cat6.get(key) or '' }}" class="w-full border-gray-300 rounded p-3 bg-white text-sm" required>
+                    <input type="number" name="{{ key }}" min="0" max="16" value="{{ actuals.cat6.get(key) or '' }}" class="w-full border-gray-300 rounded p-3 bg-white text-sm" required>
                     {% elif type == 'bool' %}
                     <select name="{{ key }}" class="w-full border-gray-300 rounded p-3 bg-white text-sm">
-                        <option value="Yes" {% if predictions.cat6.get(key) == 'Yes' %}selected{% endif %}>Yes</option>
-                        <option value="No" {% if predictions.cat6.get(key) == 'No' %}selected{% endif %}>No</option>
+                        <option value="Yes" {% if actuals.cat6.get(key) == 'Yes' %}selected{% endif %}>Yes</option>
+                        <option value="No" {% if actuals.cat6.get(key) == 'No' %}selected{% endif %}>No</option>
                     </select>
                     {% endif %}
                 </div>
                 {% endfor %}
             </div>
-            <button type="submit" {% if deadline_passed %}disabled{% endif %} class="w-full md:w-auto mt-6 bg-purple-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-purple-700 active:transform active:scale-95 transition-all disabled:opacity-50">
+            <button type="submit"  class="w-full md:w-auto mt-6 bg-purple-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-purple-700 active:transform active:scale-95 transition-all disabled:opacity-50">
                 Save General Picks
             </button>
         </form>

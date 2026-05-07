@@ -3,10 +3,10 @@ from app.scoring import calculate_total_score
 def test_scoring():
     predictions = {
         'cat1': {
-            'most_goals_scored': 15,
-            'fewest_goals_scored': 2,
-            'most_goals_conceded': 10,
-            'fewest_goals_conceded': 1
+            'most_goals_scored': 'Brazil',
+            'fewest_goals_scored': 'Oman',
+            'most_goals_conceded': 'Iraq',
+            'fewest_goals_conceded': 'France'
         },
         'cat2': {
             'Group A': ['USA', 'Mexico'],
@@ -20,16 +20,17 @@ def test_scoring():
         'cat5': ['Mbappe', 'Haaland', 'Kane', 'Vinicius Jr', 'Yamal'],
         'cat6': {
             'winner': 'Brazil',
-            'penalty_shootouts': 5
+            'penalties_round_32': 5,
+            'penalties_knockout_rest': 3
         }
     }
 
     actuals = {
         'cat1': {
-            'most_goals_scored': 15,  # Correct (5)
-            'fewest_goals_scored': 2,  # Correct (5)
-            'most_goals_conceded': 8,  # Wrong
-            'fewest_goals_conceded': 1  # Correct (5)
+            'most_goals_scored': 'Brazil',  # Correct (5)
+            'fewest_goals_scored': 'Oman',  # Correct (5)
+            'most_goals_conceded': 'Panama',  # Wrong
+            'fewest_goals_conceded': 'France'  # Correct (5)
         },
         'cat2': {
             'Group A': ['USA', 'Mexico'], # Both correct (4) + Exact order (1) = 5
@@ -43,7 +44,8 @@ def test_scoring():
         'cat5': ['Mbappe', 'Haaland', 'Vinicius Jr', 'Kane', 'Yamal'], # 1, 2, 5 correct (6)
         'cat6': {
             'winner': 'Brazil', # Correct (5)
-            'penalty_shootouts': 4 # Wrong
+            'penalties_round_32': 4, # Wrong
+            'penalties_knockout_rest': 3 # Correct (5)
         }
     }
 
@@ -57,8 +59,8 @@ def test_scoring():
     assert scores['cat3'] == 4
     assert scores['cat4'] == 2
     assert scores['cat5'] == 6
-    assert scores['cat6'] == 5
-    assert scores['total'] == 41
+    assert scores['cat6'] == 10
+    assert scores['total'] == 46
     
     print("All tests passed!")
 
