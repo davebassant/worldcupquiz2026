@@ -30,9 +30,26 @@ def init_users():
 def authenticate_user(username, pin):
     """Verifies a user's PIN."""
     user = User.query.filter_by(username=username).first()
-    if user and check_password_hash(user.pin, pin):
-        return user
-    return None
+    if not user:
+        return {"success": False, "user": None, "message": "Invalid username."}
+        
+    if user.is_locked:
+        return {"success": False, "user": user, "message": "Your account is locked. Please contact an admin."}
+
+    if check_password_hash(user.pin, pin):
+        user.failed_login_attempts = 0
+        db.session.commit()
+        return {"success": True, "user": user, "message": "Success"}
+    else:
+        user.failed_login_attempts += 1
+        if user.failed_login_attempts >= 5:
+            user.is_locked = True
+            db.session.commit()
+            return {"success": False, "user": user, "message": "Your account is locked. Please contact an admin."}
+        else:
+            remaining = 5 - user.failed_login_attempts
+            db.session.commit()
+            return {"success": False, "user": user, "message": f"Invalid PIN. {remaining} attempt(s) remaining."}
 
 def update_user_pin(user_id, new_pin):
     """Updates a user's PIN."""

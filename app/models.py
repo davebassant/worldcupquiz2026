@@ -8,6 +8,8 @@ class User(db.Model):
     username = db.Column(db.String(50), unique=True, nullable=False)
     pin = db.Column(db.String(4), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
+    failed_login_attempts = db.Column(db.Integer, default=0)
+    is_locked = db.Column(db.Boolean, default=False)
     predictions = db.relationship('Prediction', backref='user', lazy=True)
 
     def __repr__(self):

@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session, jsonify
 from datetime import datetime
 from .models import db, User, Prediction, TournamentActual
-from .user_management import authenticate_user, get_all_usernames
+from .user_management import authenticate_user, get_all_usernames, update_user_pin
 from .prediction_management import get_user_predictions, save_prediction, is_deadline_passed, get_all_teams
 from .constants import GROUPS, RIVALRIES, GOLDEN_BOOT_PLAYERS, RIVALRY_TEAMS, DEADLINE, TOURNAMENT_END
 from .scoring import calculate_total_score
@@ -30,15 +30,16 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         pin = request.form.get('pin')
-        user = authenticate_user(username, pin)
+        auth_result = authenticate_user(username, pin)
         
-        if user:
+        if auth_result["success"]:
+            user = auth_result["user"]
             session.clear()
             session['user_id'] = user.id
             flash(f'Welcome back, {username}!', 'success')
             return redirect(url_for('main.index'))
         else:
-            flash('Invalid PIN. Please try again.', 'error')
+            flash(auth_result["message"], 'error')
             
     usernames = get_all_usernames()
     return render_template('login.html', usernames=usernames, current_user=request.user)
@@ -48,6 +49,39 @@ def logout():
     session.clear()
     flash('You have been logged out.', 'success')
     return redirect(url_for('main.index'))
+
+@bp.route('/change_pin', methods=['GET', 'POST'])
+def change_pin():
+    if not request.user:
+        flash('Please login to change your PIN.', 'error')
+        return redirect(url_for('main.login'))
+
+    if request.method == 'POST':
+        current_pin = request.form.get('current_pin')
+        new_pin = request.form.get('new_pin')
+        confirm_pin = request.form.get('confirm_pin')
+
+        auth_result = authenticate_user(request.user.username, current_pin)
+        if not auth_result["success"]:
+            flash(auth_result["message"], 'error')
+            return redirect(url_for('main.change_pin'))
+
+        if new_pin != confirm_pin:
+            flash('New PIN and Confirm New PIN do not match.', 'error')
+            return redirect(url_for('main.change_pin'))
+
+        if len(new_pin) != 4 or not new_pin.isdigit():
+            flash('New PIN must be exactly 4 digits.', 'error')
+            return redirect(url_for('main.change_pin'))
+
+        if update_user_pin(request.user.id, new_pin):
+            flash('Your PIN has been updated successfully.', 'success')
+            return redirect(url_for('main.index'))
+        else:
+            flash('An error occurred while updating your PIN.', 'error')
+            return redirect(url_for('main.change_pin'))
+
+    return render_template('change_pin.html', current_user=request.user)
 
 @bp.route('/predictions', methods=['GET', 'POST'])
 def predictions():
@@ -237,3 +271,22 @@ def admin_actuals():
                            rivalry_teams=RIVALRY_TEAMS,
                            players=GOLDEN_BOOT_PLAYERS,
                            all_teams=all_teams)
+
+@bp.route('/admin/users', methods=['GET', 'POST'])
+def admin_users():
+    if not request.user or not request.user.is_admin:
+        flash('Unauthorized access.', 'error')
+        return redirect(url_for('main.index'))
+
+    if request.method == 'POST':
+        user_id = request.form.get('user_id')
+        user = User.query.get(user_id)
+        if user:
+            user.failed_login_attempts = 0
+            user.is_locked = False
+            db.session.commit()
+            flash(f'Account for {user.username} has been unlocked.', 'success')
+        return redirect(url_for('main.admin_users'))
+
+    all_users = User.query.order_by(User.username).all()
+    return render_template('admin_users.html', current_user=request.user, users=all_users)

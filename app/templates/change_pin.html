@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Change PIN - 2026 World Cup Family Predictor{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden mt-10">
+    <div class="bg-blue-600 px-6 py-4">
+        <h2 class="text-xl font-bold text-white">Change PIN</h2>
+    </div>
+    
+    <div class="p-6">
+        <form method="POST" action="{{ url_for('main.change_pin') }}" class="space-y-6">
+            <div>
+                <label for="current_pin" class="block text-sm font-medium text-gray-700">Current PIN</label>
+                <div class="mt-1">
+                    <input type="password" id="current_pin" name="current_pin" required pattern="[0-9]{4}" title="Must be exactly 4 digits" class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                </div>
+            </div>
+
+            <div>
+                <label for="new_pin" class="block text-sm font-medium text-gray-700">New PIN</label>
+                <div class="mt-1">
+                    <input type="password" id="new_pin" name="new_pin" required pattern="[0-9]{4}" title="Must be exactly 4 digits" class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                </div>
+                <p class="mt-2 text-sm text-gray-500">Your new PIN must be exactly 4 digits.</p>
+            </div>
+
+            <div>
+                <label for="confirm_pin" class="block text-sm font-medium text-gray-700">Confirm New PIN</label>
+                <div class="mt-1">
+                    <input type="password" id="confirm_pin" name="confirm_pin" required pattern="[0-9]{4}" title="Must be exactly 4 digits" class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Update PIN
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
