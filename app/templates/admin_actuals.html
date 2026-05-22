@@ -16,7 +16,7 @@
         <h2 class="text-xl font-bold mb-4 flex items-center">
             <span class="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">Cat 1</span>
             Match Totals (Group Stage Only)
-            <span class="ml-auto text-sm font-normal text-blue-600">5 pts each</span>
+            <span class="ml-auto text-base font-normal text-blue-600">5 pts each</span>
         </h2>
         <form method="POST">
             <input type="hidden" name="category" value="cat1">
@@ -28,7 +28,7 @@
                     ('fewest_goals_conceded', 'Team with FEWEST goals conceded')
                 ] %}
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ label }}</label>
+                    <label class="block text-base font-medium text-gray-700 mb-1">{{ label }}</label>
                     <select name="{{ key }}" class="block w-full border-gray-300 rounded-lg p-3 bg-gray-50 focus:ring-blue-500 focus:border-blue-500">
                         <option value="">Select Team</option>
                         {% for team in all_teams %}
@@ -49,7 +49,7 @@
         <h2 class="text-xl font-bold mb-4 flex items-center">
             <span class="bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">Cat 2</span>
             Group Qualification
-            <span class="ml-auto text-sm font-normal text-green-600 text-right">2 pts per team<br class="sm:hidden">+ 1 pt bonus</span>
+            <span class="ml-auto text-base font-normal text-green-600 text-right">2 pts per team<br class="sm:hidden">+ 1 pt bonus</span>
         </h2>
         <form method="POST">
             <input type="hidden" name="category" value="cat2">
@@ -60,7 +60,7 @@
                     <div class="space-y-3">
                         <div>
                             <span class="text-[10px] uppercase font-bold text-gray-400 block mb-1">1st Place</span>
-                            <select name="{{ group }}_1" class="w-full border-gray-300 rounded-md p-2 text-sm bg-white">
+                            <select name="{{ group }}_1" class="w-full border-gray-300 rounded-md p-2 text-base bg-white">
                                 <option value="">Select 1st</option>
                                 {% for team in teams %}
                                 <option value="{{ team }}" {% if actuals.cat2.get(group) and actuals.cat2.get(group)[0] == team %}selected{% endif %}>{{ team }}</option>
@@ -69,7 +69,7 @@
                         </div>
                         <div>
                             <span class="text-[10px] uppercase font-bold text-gray-400 block mb-1">2nd Place</span>
-                            <select name="{{ group }}_2" class="w-full border-gray-300 rounded-md p-2 text-sm bg-white">
+                            <select name="{{ group }}_2" class="w-full border-gray-300 rounded-md p-2 text-base bg-white">
                                 <option value="">Select 2nd</option>
                                 {% for team in teams %}
                                 <option value="{{ team }}" {% if actuals.cat2.get(group) and actuals.cat2.get(group)[1] == team %}selected{% endif %}>{{ team }}</option>
@@ -91,17 +91,17 @@
         <h2 class="text-xl font-bold mb-2 flex items-center">
             <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">Cat 3</span>
             The Lucky 8
-            <span class="ml-auto text-sm font-normal text-yellow-600">2 pts each</span>
+            <span class="ml-auto text-base font-normal text-yellow-600">2 pts each</span>
         </h2>
-        <p class="text-sm text-gray-500 mb-4 italic">Select the 8 groups whose 3rd-place team will qualify.</p>
+        <p class="text-base text-gray-500 mb-4 italic">Select the 8 groups whose 3rd-place team will qualify.</p>
         <form method="POST">
             <input type="hidden" name="category" value="cat3">
-            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                 {% for group in groups.keys() %}
                 {% set g_letter = group.split(' ')[1] %}
                 <label class="relative flex flex-col items-center justify-center p-3 border-2 rounded-xl cursor-pointer transition-all hover:bg-yellow-50 {% if actuals.cat3 is iterable and g_letter in actuals.cat3 %}border-yellow-500 bg-yellow-50{% else %}border-gray-100{% endif %}">
-                    <input type="checkbox" name="lucky_8" value="{{ g_letter }}" class="absolute opacity-0" {% if actuals.cat3 is iterable and g_letter in actuals.cat3 %}checked{% endif %}
-                           onchange="this.parentElement.classList.toggle('border-yellow-500'); this.parentElement.classList.toggle('bg-yellow-50'); this.parentElement.classList.toggle('border-gray-100')">
+                    <input type="checkbox" name="lucky_8" value="{{ g_letter }}" class="lucky-8-checkbox absolute opacity-0" {% if actuals.cat3 is iterable and g_letter in actuals.cat3 %}checked{% endif %}
+                           onchange="handleLucky8Change(this)">
                     <span class="text-lg font-bold">{{ g_letter }}</span>
                 </label>
                 {% endfor %}
@@ -117,16 +117,16 @@
         <h2 class="text-xl font-bold mb-2 flex items-center">
             <span class="bg-red-100 text-red-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">Cat 4</span>
             Rivalry Face-Offs
-            <span class="ml-auto text-sm font-normal text-red-600">2 pts each</span>
+            <span class="ml-auto text-base font-normal text-red-600">2 pts each</span>
         </h2>
-        <p class="text-sm text-gray-500 mb-4 italic">Predict which team will progress the furthest in the tournament.</p>
+        <p class="text-base text-gray-500 mb-4 italic">Predict which team will progress the furthest in the tournament.</p>
         <form method="POST">
             <input type="hidden" name="category" value="cat4">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {% for key, label in rivalries %}
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 border rounded-lg bg-gray-50">
-                    <span class="text-sm font-bold text-gray-700 mb-2 sm:mb-0">{{ label }}</span>
-                    <select name="{{ key }}" class="w-full sm:w-auto border-gray-300 rounded p-2 text-sm bg-white">
+                    <span class="text-base font-bold text-gray-700 mb-2 sm:mb-0">{{ label }}</span>
+                    <select name="{{ key }}" class="w-full sm:w-auto border-gray-300 rounded p-2 text-base bg-white">
                         <option value="">Select Winner</option>
                         {% for team in rivalry_teams[key] %}
                         <option value="{{ team }}" {% if actuals.cat4.get(key) == team %}selected{% endif %}>{{ team }}</option>
@@ -146,16 +146,16 @@
         <h2 class="text-xl font-bold mb-2 flex items-center">
             <span class="bg-indigo-100 text-indigo-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">Cat 5</span>
             Golden Boot Ranking
-            <span class="ml-auto text-sm font-normal text-indigo-600">2 pts per position</span>
+            <span class="ml-auto text-base font-normal text-indigo-600">2 pts per position</span>
         </h2>
-        <p class="text-sm text-gray-500 mb-4 italic">Rank these players in order of most goals scored (1st = most goals).</p>
+        <p class="text-base text-gray-500 mb-4 italic">Rank these players in order of most goals scored (1st = most goals).</p>
         <form method="POST" id="cat5-form">
             <input type="hidden" name="category" value="cat5">
             <div class="space-y-3 max-w-lg">
                 {% for i in range(1, 6) %}
                 <div class="flex items-center bg-gray-50 p-2 rounded-lg border">
-                    <span class="flex items-center justify-center bg-indigo-600 text-white font-bold rounded-full w-8 h-8 mr-3 text-sm">{{ i }}</span>
-                    <select name="player_{{ i }}" class="cat5-select flex-1 border-gray-300 rounded-lg p-3 text-sm bg-white">
+                    <span class="flex items-center justify-center bg-indigo-600 text-white font-bold rounded-full w-8 h-8 mr-3 text-base">{{ i }}</span>
+                    <select name="player_{{ i }}" class="cat5-select flex-1 border-gray-300 rounded-lg p-3 text-base bg-white">
                         <option value="">Select Player</option>
                         {% for player in players %}
                         <option value="{{ player }}" {% if actuals.cat5 is iterable and actuals.cat5|length >= i and actuals.cat5[i-1] == player %}selected{% endif %}>{{ player }}</option>
@@ -164,7 +164,7 @@
                 </div>
                 {% endfor %}
             </div>
-            <div id="cat5-error" class="hidden mt-2 text-sm text-red-600 font-bold">Please select 5 unique players. Duplicates are not allowed.</div>
+            <div id="cat5-error" class="hidden mt-2 text-base text-red-600 font-bold">Please select 5 unique players. Duplicates are not allowed.</div>
             <button type="submit" id="cat5-submit"  class="w-full md:w-auto mt-6 bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 active:transform active:scale-95 transition-all disabled:opacity-50">
                 Save Ranking
             </button>
@@ -208,7 +208,7 @@
         <h2 class="text-xl font-bold mb-4 flex items-center">
             <span class="bg-purple-100 text-purple-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">Cat 6</span>
             General Actuals
-            <span class="ml-auto text-sm font-normal text-purple-600">5 pts each</span>
+            <span class="ml-auto text-base font-normal text-purple-600">5 pts each</span>
         </h2>
         <form method="POST">
             <input type="hidden" name="category" value="cat6">
@@ -223,18 +223,20 @@
                     ('wipeout_exists', 'Any team to lose all 3 group games?', 'bool')
                 ] %}
                 <div class="bg-gray-50 p-3 rounded-lg border">
-                    <label class="block text-sm font-bold text-gray-700 mb-2">{{ label }}</label>
+                    <label class="block text-base font-bold text-gray-700 mb-2">{{ label }}</label>
                     {% if type == 'select' %}
-                    <select name="{{ key }}" class="w-full border-gray-300 rounded p-3 bg-white text-sm">
+                    <select name="{{ key }}" class="w-full border-gray-300 rounded p-3 bg-white text-base">
                         <option value="">Select Team</option>
                         {% for team in all_teams %}
                         <option value="{{ team }}" {% if actuals.cat6.get(key) == team %}selected{% endif %}>{{ team }}</option>
                         {% endfor %}
                     </select>
                     {% elif type == 'number' %}
-                    <input type="number" name="{{ key }}" min="0" max="16" value="{{ actuals.cat6.get(key) or '' }}" class="w-full border-gray-300 rounded p-3 bg-white text-sm" required>
+                    <input type="number" name="{{ key }}" min="0" max="16" value="{{ actuals.cat6.get(key) or '' }}" 
+                           inputmode="numeric" pattern="[0-9]*"
+                           class="w-full border-gray-300 rounded p-3 bg-white text-base" required>
                     {% elif type == 'bool' %}
-                    <select name="{{ key }}" class="w-full border-gray-300 rounded p-3 bg-white text-sm">
+                    <select name="{{ key }}" class="w-full border-gray-300 rounded p-3 bg-white text-base">
                         <option value="Yes" {% if actuals.cat6.get(key) == 'Yes' %}selected{% endif %}>Yes</option>
                         <option value="No" {% if actuals.cat6.get(key) == 'No' %}selected{% endif %}>No</option>
                     </select>
@@ -248,4 +250,26 @@
         </form>
     </section>
 </div>
+
+{% block scripts %}
+<script>
+function handleLucky8Change(checkbox) {
+    const checked = document.querySelectorAll('.lucky-8-checkbox:checked');
+    if (checked.length > 8) {
+        checkbox.checked = false;
+        alert('You can only select a maximum of 8 groups for The Lucky 8.');
+        return;
+    }
+    
+    const parent = checkbox.parentElement;
+    if (checkbox.checked) {
+        parent.classList.add('border-yellow-500', 'bg-yellow-50');
+        parent.classList.remove('border-gray-100');
+    } else {
+        parent.classList.remove('border-yellow-500', 'bg-yellow-50');
+        parent.classList.add('border-gray-100');
+    }
+}
+</script>
+{% endblock %}
 {% endblock %}

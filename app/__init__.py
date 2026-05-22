@@ -7,7 +7,7 @@ from .models import db
 migrate = Migrate()
 htmx = Htmx()
 
-def create_app():
+def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     
     # Configuration
@@ -17,7 +17,8 @@ def create_app():
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
     )
 
-    # Ensure instance folder exists
+    if test_config:
+        app.config.from_mapping(test_config)
     try:
         os.makedirs(app.instance_path)
     except OSError:

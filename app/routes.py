@@ -110,6 +110,9 @@ def predictions():
                 data[group] = [request.form.get(f'{group}_1'), request.form.get(f'{group}_2')]
         elif category == 'cat3':
             data = request.form.getlist('lucky_8')
+            if len(data) > 8:
+                flash('You can only select a maximum of 8 groups for The Lucky 8.', 'error')
+                return redirect(url_for('main.predictions'))
         elif category == 'cat4':
             data = {rivalry[0]: request.form.get(rivalry[0]) for rivalry in RIVALRIES}
         elif category == 'cat5':
@@ -219,6 +222,9 @@ def admin_actuals():
                 data[group] = [request.form.get(f'{group}_1'), request.form.get(f'{group}_2')]
         elif category == 'cat3':
             data = request.form.getlist('lucky_8')
+            if len(data) > 8:
+                flash('You can only select a maximum of 8 groups for The Lucky 8.', 'error')
+                return redirect(url_for('main.admin_actuals'))
         elif category == 'cat4':
             data = {rivalry[0]: request.form.get(rivalry[0]) for rivalry in RIVALRIES}
         elif category == 'cat5':

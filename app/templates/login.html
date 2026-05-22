@@ -15,7 +15,8 @@
         <div class="mb-6">
             <label for="pin" class="block text-gray-700 text-sm font-bold mb-2">Enter PIN</label>
             <input type="password" name="pin" id="pin" required maxlength="4" placeholder="••••"
-                   class="w-full border rounded-md px-3 py-2 text-center text-xl tracking-widest focus:outline-none focus:ring-2 focus:ring-blue-500">
+                   inputmode="numeric" pattern="[0-9]*"
+                   class="w-full border rounded-md px-3 py-2 text-center text-base tracking-widest focus:outline-none focus:ring-2 focus:ring-blue-500">
             <p class="mt-2 text-xs text-gray-500 text-center">Default PIN is 0000</p>
         </div>
         <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200">

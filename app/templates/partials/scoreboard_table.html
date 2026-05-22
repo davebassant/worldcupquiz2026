@@ -1,85 +1,151 @@
-<div id="scoreboard-table" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-    <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-            <tr>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Player</th>
-                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total Score</th>
-                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Details</th>
-            </tr>
-        </thead>
-        {% for player in scoreboard_data %}
-            <tbody class="bg-white divide-y divide-gray-200" x-data="{ open: false }">
-                {% set rank = loop.index %}
-                {% set rank_color = '' %}
-                {% if rank == 1 %}
-                    {% set rank_color = 'bg-yellow-50 border-l-4 border-yellow-400' %}
-                {% elif rank == 2 %}
-                    {% set rank_color = 'bg-gray-50 border-l-4 border-gray-400' %}
-                {% elif rank == 3 %}
-                    {% set rank_color = 'bg-orange-50 border-l-4 border-orange-400' %}
-                {% endif %}
-                
-                <tr class="{{ rank_color }} hover:bg-blue-50 transition-colors">
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {% if rank == 1 %}🥇 1st
-                        {% elif rank == 2 %}🥈 2nd
-                        {% elif rank == 3 %}🥉 3rd
-                        {% else %}{{ rank }}th{% endif %}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
-                        {{ player.username }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-bold text-blue-600 text-xl">
-                        {{ player.scores.total }} pts
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                        <button @click="open = !open" class="text-blue-600 hover:text-blue-900 focus:outline-none flex items-center justify-center w-full">
-                            <span x-show="!open">Show Breakdown</span>
-                            <span x-show="open" x-cloak>Hide Breakdown</span>
-                            <svg class="ml-1 w-4 h-4 transform transition-transform" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </button>
-                    </td>
-                </tr>
-                <tr x-show="open" x-cloak class="bg-gray-50">
-                    <td colspan="4" class="px-6 py-4">
-                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
-                            <div class="flex justify-between border-b pb-1">
-                                <span class="text-gray-500">Cat 1 (Totals):</span>
-                                <span class="font-bold">{{ player.scores.cat1 }}</span>
-                            </div>
-                            <div class="flex justify-between border-b pb-1">
-                                <span class="text-gray-500">Cat 2 (Groups):</span>
-                                <span class="font-bold">{{ player.scores.cat2 }}</span>
-                            </div>
-                            <div class="flex justify-between border-b pb-1">
-                                <span class="text-gray-500">Cat 3 (Lucky 8):</span>
-                                <span class="font-bold">{{ player.scores.cat3 }}</span>
-                            </div>
-                            <div class="flex justify-between border-b pb-1">
-                                <span class="text-gray-500">Cat 4 (Rivalries):</span>
-                                <span class="font-bold">{{ player.scores.cat4 }}</span>
-                            </div>
-                            <div class="flex justify-between border-b pb-1">
-                                <span class="text-gray-500">Cat 5 (Golden Boot):</span>
-                                <span class="font-bold">{{ player.scores.cat5 }}</span>
-                            </div>
-                            <div class="flex justify-between border-b pb-1">
-                                <span class="text-gray-500">Cat 6 (General):</span>
-                                <span class="font-bold">{{ player.scores.cat6 }}</span>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        {% else %}
-            <tbody class="bg-white divide-y divide-gray-200">
+<div id="scoreboard-table">
+    <!-- Desktop Table (visible on md screens and up) -->
+    <div class="hidden md:block bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
                 <tr>
-                    <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                        No participants found.
-                    </td>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Player</th>
+                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total Score</th>
+                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Details</th>
                 </tr>
-            </tbody>
+            </thead>
+            {% for player in scoreboard_data %}
+                <tbody class="bg-white divide-y divide-gray-200" x-data="{ open: false }">
+                    {% set rank = loop.index %}
+                    {% set rank_color = '' %}
+                    {% if rank == 1 %}
+                        {% set rank_color = 'bg-yellow-50 border-l-4 border-yellow-400' %}
+                    {% elif rank == 2 %}
+                        {% set rank_color = 'bg-gray-50 border-l-4 border-gray-400' %}
+                    {% elif rank == 3 %}
+                        {% set rank_color = 'bg-orange-50 border-l-4 border-orange-400' %}
+                    {% endif %}
+                    
+                    <tr class="{{ rank_color }} hover:bg-blue-50 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            {% if rank == 1 %}🥇 1st
+                            {% elif rank == 2 %}🥈 2nd
+                            {% elif rank == 3 %}🥉 3rd
+                            {% else %}{{ rank }}th{% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
+                            {{ player.username }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-bold text-blue-600 text-xl">
+                            {{ player.scores.total }} pts
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                            <button @click="open = !open" class="text-blue-600 hover:text-blue-900 focus:outline-none flex items-center justify-center w-full">
+                                <span x-show="!open">Show Breakdown</span>
+                                <span x-show="open" x-cloak>Hide Breakdown</span>
+                                <svg class="ml-1 w-4 h-4 transform transition-transform" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr x-show="open" x-cloak class="bg-gray-50">
+                        <td colspan="4" class="px-6 py-4">
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+                                <div class="flex justify-between border-b pb-1">
+                                    <span class="text-gray-500">Cat 1 (Totals):</span>
+                                    <span class="font-bold">{{ player.scores.cat1 }}</span>
+                                </div>
+                                <div class="flex justify-between border-b pb-1">
+                                    <span class="text-gray-500">Cat 2 (Groups):</span>
+                                    <span class="font-bold">{{ player.scores.cat2 }}</span>
+                                </div>
+                                <div class="flex justify-between border-b pb-1">
+                                    <span class="text-gray-500">Cat 3 (Lucky 8):</span>
+                                    <span class="font-bold">{{ player.scores.cat3 }}</span>
+                                </div>
+                                <div class="flex justify-between border-b pb-1">
+                                    <span class="text-gray-500">Cat 4 (Rivalries):</span>
+                                    <span class="font-bold">{{ player.scores.cat4 }}</span>
+                                </div>
+                                <div class="flex justify-between border-b pb-1">
+                                    <span class="text-gray-500">Cat 5 (Golden Boot):</span>
+                                    <span class="font-bold">{{ player.scores.cat5 }}</span>
+                                </div>
+                                <div class="flex justify-between border-b pb-1">
+                                    <span class="text-gray-500">Cat 6 (General):</span>
+                                    <span class="font-bold">{{ player.scores.cat6 }}</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            {% else %}
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <tr>
+                        <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                            No participants found.
+                        </td>
+                    </tr>
+                </tbody>
+            {% endfor %}
+        </table>
+    </div>
+
+    <!-- Mobile Card Layout (visible on small screens) -->
+    <div class="md:hidden space-y-4">
+        {% for player in scoreboard_data %}
+            {% set rank = loop.index %}
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden" x-data="{ open: false }">
+                <div class="p-4 flex items-center justify-between {% if rank == 1 %}bg-yellow-50{% elif rank == 2 %}bg-gray-50{% elif rank == 3 %}bg-orange-50{% endif %}">
+                    <div class="flex items-center">
+                        <span class="text-lg font-bold mr-3">
+                            {% if rank == 1 %}🥇
+                            {% elif rank == 2 %}🥈
+                            {% elif rank == 3 %}🥉
+                            {% else %}{{ rank }}.{% endif %}
+                        </span>
+                        <span class="font-bold text-gray-900">{{ player.username }}</span>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-blue-600 font-bold text-xl">{{ player.scores.total }}</span>
+                        <span class="text-xs text-gray-500 ml-1">pts</span>
+                    </div>
+                </div>
+                
+                <button @click="open = !open" class="w-full py-3 px-4 text-sm font-medium text-blue-600 bg-white border-t border-gray-100 flex items-center justify-center focus:outline-none">
+                    <span x-show="!open">View Breakdown</span>
+                    <span x-show="open" x-cloak>Hide Breakdown</span>
+                    <svg class="ml-1 w-4 h-4 transform transition-transform" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                
+                <div x-show="open" x-cloak class="p-4 bg-gray-50 border-t border-gray-100">
+                    <div class="grid grid-cols-2 gap-y-3 gap-x-4 text-sm">
+                        <div class="flex flex-col border-b border-gray-200 pb-1">
+                            <span class="text-[10px] uppercase font-bold text-gray-400">Cat 1: Totals</span>
+                            <span class="font-bold text-gray-800">{{ player.scores.cat1 }}</span>
+                        </div>
+                        <div class="flex flex-col border-b border-gray-200 pb-1">
+                            <span class="text-[10px] uppercase font-bold text-gray-400">Cat 2: Groups</span>
+                            <span class="font-bold text-gray-800">{{ player.scores.cat2 }}</span>
+                        </div>
+                        <div class="flex flex-col border-b border-gray-200 pb-1">
+                            <span class="text-[10px] uppercase font-bold text-gray-400">Cat 3: Lucky 8</span>
+                            <span class="font-bold text-gray-800">{{ player.scores.cat3 }}</span>
+                        </div>
+                        <div class="flex flex-col border-b border-gray-200 pb-1">
+                            <span class="text-[10px] uppercase font-bold text-gray-400">Cat 4: Rivalries</span>
+                            <span class="font-bold text-gray-800">{{ player.scores.cat4 }}</span>
+                        </div>
+                        <div class="flex flex-col border-b border-gray-200 pb-1">
+                            <span class="text-[10px] uppercase font-bold text-gray-400">Cat 5: Boot</span>
+                            <span class="font-bold text-gray-800">{{ player.scores.cat5 }}</span>
+                        </div>
+                        <div class="flex flex-col border-b border-gray-200 pb-1">
+                            <span class="text-[10px] uppercase font-bold text-gray-400">Cat 6: General</span>
+                            <span class="font-bold text-gray-800">{{ player.scores.cat6 }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="bg-white p-8 rounded-xl border border-gray-200 text-center text-gray-500">
+                No participants found.
+            </div>
         {% endfor %}
-    </table>
+    </div>
 </div>
