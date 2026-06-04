@@ -20,7 +20,7 @@ COPY . .
 RUN mkdir -p instance
 
 # Expose the port Flask runs on
-EXPOSE 5000
+EXPOSE 6000
 
 # Set environment variables
 ENV FLASK_APP=run.py
