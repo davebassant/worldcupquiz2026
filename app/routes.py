@@ -211,10 +211,10 @@ def admin_actuals():
         # Similar data gathering logic to predictions
         if category == 'cat1':
             data = {
-                'most_goals_scored': request.form.get('most_goals_scored'),
-                'fewest_goals_scored': request.form.get('fewest_goals_scored'),
-                'most_goals_conceded': request.form.get('most_goals_conceded'),
-                'fewest_goals_conceded': request.form.get('fewest_goals_conceded')
+                'most_goals_scored': request.form.getlist('most_goals_scored'),
+                'fewest_goals_scored': request.form.getlist('fewest_goals_scored'),
+                'most_goals_conceded': request.form.getlist('most_goals_conceded'),
+                'fewest_goals_conceded': request.form.getlist('fewest_goals_conceded')
             }
         elif category == 'cat2':
             data = {}

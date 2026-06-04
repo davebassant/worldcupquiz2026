@@ -1,6 +1,6 @@
 from typing import List, Dict, Any
 
-def calculate_category_1_match_totals(predictions: Dict[str, str], actuals: Dict[str, str]) -> int:
+def calculate_category_1_match_totals(predictions: Dict[str, str], actuals: Dict[str, Any]) -> int:
     """
     Category 1: Match Totals (5 pts each)
     Predict TEAMS with most/fewest goals scored and conceded in the group stages.
@@ -8,8 +8,17 @@ def calculate_category_1_match_totals(predictions: Dict[str, str], actuals: Dict
     score = 0
     # Expected keys: 'most_goals_scored', 'fewest_goals_scored', 'most_goals_conceded', 'fewest_goals_conceded'
     for key in ['most_goals_scored', 'fewest_goals_scored', 'most_goals_conceded', 'fewest_goals_conceded']:
-        if key in predictions and key in actuals and predictions[key] == actuals[key] and predictions[key]:
-            score += 5
+        if key in predictions and key in actuals:
+            prediction = predictions[key]
+            actual = actuals[key]
+            if not prediction:
+                continue
+                
+            if isinstance(actual, list):
+                if prediction in actual:
+                    score += 5
+            elif prediction == actual:
+                score += 5
     return score
 
 def calculate_category_2_group_qualification(predictions: Dict[str, List[str]], actuals: Dict[str, List[str]]) -> int:

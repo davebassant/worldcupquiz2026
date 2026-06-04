@@ -41,10 +41,10 @@ GOLDEN_BOOT_PLAYERS = [
 
 # Mapping for rivalry internal names to display names
 RIVALRY_TEAMS = {
-    'usa_vs_mexico': ['USA', 'Mexico'],
-    'canada_vs_scotland': ['Canada', 'Scotland'],
-    'brazil_vs_argentina': ['Brazil', 'Argentina'],
-    'england_vs_scotland': ['England', 'Scotland'],
-    'france_vs_norway': ['France', 'Norway'],
-    'spain_vs_portugal': ['Spain', 'Portugal']
+    'usa_vs_mexico': ['USA', 'Mexico', 'Tie'],
+    'canada_vs_scotland': ['Canada', 'Scotland', 'Tie'],
+    'brazil_vs_argentina': ['Brazil', 'Argentina', 'Tie'],
+    'england_vs_scotland': ['England', 'Scotland', 'Tie'],
+    'france_vs_norway': ['France', 'Norway', 'Tie'],
+    'spain_vs_portugal': ['Spain', 'Portugal', 'Tie']
 }

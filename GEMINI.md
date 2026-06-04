@@ -20,7 +20,7 @@ You are a Senior Systems Engineer specialising in Python, Linux, and Scalable We
 3. **Category 2: Group Qualification:** 2 points for each correct team progressing from a group.
    * 1 point bonus for predicting the exact 1st/2nd place order.
 4. **Category 3: The Lucky 8:** Predict which 8 specific groups will have their 3rd-place team qualify for the Round of 32 (2 pts each).
-5. **Category 4: Rivalry Face-Offs:** Predict the winner of specific progression battles: USA vs Mexico, Canada vs Scotland, Brazil vs Argentina, England vs Scotland, France vs Norway & Spain vs Portugal (2 pts each).
+5. **Category 4: Rivalry Face-Offs:** Predict the result (Winner or Tie) of specific progression battles: USA vs Mexico, Canada vs Scotland, Brazil vs Argentina, England vs Scotland, France vs Norway & Spain vs Portugal (2 pts each).
 6. **Category 5: Golden Boot Ranking:** Rank a list of 5 players in correct scoring order: Kylian Mbappe, Erling Haaland, Harry Kane, Vinicius Junior & Lamine Yamal (2 pts per correct position).
 7. **Category 6: General Predictions:** Winner, Runner-up, 3rd Place, total penalty shootouts, host nation success (Will any of the three host nations reach the Semi-Finals?), and group stage wipeouts (Will any team lose all 3 of their group games?) (5 pts each).
 

@@ -124,7 +124,7 @@
             Rivalry Face-Offs
             <span class="ml-auto text-sm font-normal text-red-600">2 pts each</span>
         </h2>
-        <p class="text-sm text-gray-500 mb-4 italic">Predict which team will progress the furthest in the tournament.</p>
+        <p class="text-sm text-gray-500 mb-4 italic">Predict which team will progress the furthest in the tournament (or select 'Tie').</p>
         <form method="POST">
             <input type="hidden" name="category" value="cat4">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -132,7 +132,7 @@
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 border rounded-lg bg-gray-50">
                     <span class="text-sm font-bold text-gray-700 mb-2 sm:mb-0">{{ label }}</span>
                     <select name="{{ key }}" class="w-full sm:w-auto border-gray-300 rounded p-2 text-base bg-white">
-                        <option value="">Select Winner</option>
+                        <option value="">Select Result</option>
                         {% for team in rivalry_teams[key] %}
                         <option value="{{ team }}" {% if predictions.cat4.get(key) == team %}selected{% endif %}>{{ team }}</option>
                         {% endfor %}

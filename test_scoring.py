@@ -15,7 +15,8 @@ def test_scoring():
         'cat3': ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
         'cat4': {
             'usa_vs_mexico': 'USA',
-            'canada_vs_scotland': 'Canada'
+            'canada_vs_scotland': 'Canada',
+            'brazil_vs_argentina': 'Tie'
         },
         'cat5': ['Mbappe', 'Haaland', 'Kane', 'Vinicius Jr', 'Yamal'],
         'cat6': {
@@ -39,7 +40,8 @@ def test_scoring():
         'cat3': ['A', 'B', 'I', 'J'], # A and B correct (4)
         'cat4': {
             'usa_vs_mexico': 'USA', # Correct (2)
-            'canada_vs_scotland': 'Scotland' # Wrong
+            'canada_vs_scotland': 'Scotland', # Wrong
+            'brazil_vs_argentina': 'Tie' # Correct (2)
         },
         'cat5': ['Mbappe', 'Haaland', 'Vinicius Jr', 'Kane', 'Yamal'], # 1, 2, 5 correct (6)
         'cat6': {
@@ -57,10 +59,10 @@ def test_scoring():
     assert scores['cat1'] == 15
     assert scores['cat2'] == 9
     assert scores['cat3'] == 4
-    assert scores['cat4'] == 2
+    assert scores['cat4'] == 4
     assert scores['cat5'] == 6
     assert scores['cat6'] == 10
-    assert scores['total'] == 46
+    assert scores['total'] == 48
     
     print("All tests passed!")
 
