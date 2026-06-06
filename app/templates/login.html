@@ -8,7 +8,7 @@
             <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Select Your Profile</label>
             <select name="username" id="username" class="w-full border rounded-md px-3 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 {% for name in usernames %}
-                    <option value="{{ name }}">{{ name }}</option>
+                    <option value="{{ name }}" {% if name == selected_username %}selected{% endif %}>{{ name }}</option>
                 {% endfor %}
             </select>
         </div>

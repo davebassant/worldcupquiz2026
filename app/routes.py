@@ -27,11 +27,12 @@ def index():
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
+    username = None
     if request.method == 'POST':
         username = request.form.get('username')
         pin = request.form.get('pin')
         auth_result = authenticate_user(username, pin)
-        
+
         if auth_result["success"]:
             user = auth_result["user"]
             session.clear()
@@ -40,10 +41,9 @@ def login():
             return redirect(url_for('main.index'))
         else:
             flash(auth_result["message"], 'error')
-            
-    usernames = get_all_usernames()
-    return render_template('login.html', usernames=usernames, current_user=request.user)
 
+    usernames = get_all_usernames()
+    return render_template('login.html', usernames=usernames, current_user=request.user, selected_username=username)
 @bp.route('/logout')
 def logout():
     session.clear()
