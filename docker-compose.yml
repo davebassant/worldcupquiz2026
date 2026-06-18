@@ -6,7 +6,7 @@ services:
     volumes:
       - ./instance:/app/instance
     environment:
-      - FLASK_ENV=development
+      - FLASK_ENV=production
       - SECRET_KEY=${SECRET_KEY}
     restart: unless-stopped
 

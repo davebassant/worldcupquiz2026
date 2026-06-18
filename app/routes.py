@@ -2,8 +2,8 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for,
 from datetime import datetime
 from .models import db, User, Prediction, TournamentActual
 from .user_management import authenticate_user, get_all_usernames, update_user_pin
-from .prediction_management import get_user_predictions, save_prediction, is_deadline_passed, get_all_teams
-from .constants import GROUPS, RIVALRIES, GOLDEN_BOOT_PLAYERS, RIVALRY_TEAMS, DEADLINE, TOURNAMENT_END
+from .prediction_management import get_user_predictions, save_prediction, is_deadline_passed, get_all_teams, get_all_user_predictions
+from .constants import GROUPS, RIVALRIES, GOLDEN_BOOT_PLAYERS, RIVALRY_TEAMS, DEADLINE, TOURNAMENT_END, CATEGORY_TITLES
 from .scoring import calculate_total_score
 
 bp = Blueprint('main', __name__)
@@ -198,6 +198,20 @@ def scoreboard():
         return render_template('partials/scoreboard_table.html', scoreboard_data=scoreboard_data)
 
     return render_template('scoreboard.html', current_user=request.user, scoreboard_data=scoreboard_data)
+
+@bp.route('/all_answers')
+def all_answers():
+    all_user_predictions_data = get_all_user_predictions()
+    all_teams = get_all_teams()
+    return render_template('all_answers.html', 
+                           current_user=request.user, # Still pass to template for base.html checks
+                           all_user_predictions_data=all_user_predictions_data,
+                           groups=GROUPS,
+                           rivalries=RIVALRIES,
+                           rivalry_teams=RIVALRY_TEAMS,
+                           players=GOLDEN_BOOT_PLAYERS,
+                           all_teams=all_teams,
+                           category_titles=CATEGORY_TITLES)
 
 @bp.route('/admin/actuals', methods=['GET', 'POST'])
 def admin_actuals():

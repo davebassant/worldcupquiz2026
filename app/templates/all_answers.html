@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}All Player Predictions{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">All Player Predictions</h1>
+
+    {% if deadline_passed %}
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
+            <strong class="font-bold">Deadline Passed!</strong>
+            <span class="block sm:inline"> Predictions can no longer be changed.</span>
+        </div>
+    {% else %}
+        <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative mb-6" role="alert">
+            <strong class="font-bold">Tournament Not Started!</strong>
+            <span class="block sm:inline"> Predictions can still be edited by players.</span>
+        </div>
+    {% endif %}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for user_data in all_user_predictions_data %}
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">{{ user_data.username }}'s Predictions</h2>
+            
+            {% for cat_key, cat_title in category_titles.items() %}
+            <div class="mb-5">
+                <h3 class="text-xl font-medium text-gray-600 mb-2">{{ cat_title }}</h3>
+                {% set predictions = user_data.predictions[cat_key] %}
+
+                {% if cat_key == 'cat1' %} {# Category 1: Match Totals #}
+                    <ul class="list-disc list-inside ml-4 text-gray-700">
+                        <li>Most Goals Scored: {{ predictions.most_goals_scored | default('N/A', true) }}</li>
+                        <li>Fewest Goals Scored: {{ predictions.fewest_goals_scored | default('N/A', true) }}</li>
+                        <li>Most Goals Conceded: {{ predictions.most_goals_conceded | default('N/A', true) }}</li>
+                        <li>Fewest Goals Conceded: {{ predictions.fewest_goals_conceded | default('N/A', true) }}</li>
+                    </ul>
+                {% elif cat_key == 'cat2' %} {# Category 2: Group Qualification #}
+                    <ul class="list-disc list-inside ml-4 text-gray-700">
+                        {% for group_name, teams in groups.items() %}
+                            <li>
+                                <strong>{{ group_name }}:</strong>
+                                {% if predictions.get(group_name) %}
+                                    {{ predictions[group_name][0] | default('N/A', true) }} (1st),
+                                    {{ predictions[group_name][1] | default('N/A', true) }} (2nd)
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% elif cat_key == 'cat3' %} {# Category 3: The Lucky 8 #}
+                    <p class="ml-4 text-gray-700">
+                        {% if predictions %}
+                            {{ predictions | join(', ') }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </p>
+                {% elif cat_key == 'cat4' %} {# Category 4: Rivalry Face-Offs #}
+                    <ul class="list-disc list-inside ml-4 text-gray-700">
+                        {% for rivalry_key, rivalry_title in rivalries %}
+                            <li>
+                                <strong>{{ rivalry_title }}:</strong>
+                                {% if predictions.get(rivalry_key) %}
+                                    {{ predictions[rivalry_key] }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% elif cat_key == 'cat5' %} {# Category 5: Golden Boot Ranking #}
+                    <ol class="list-decimal list-inside ml-4 text-gray-700">
+                        {% if predictions %}
+                            {% for player in predictions %}
+                                <li>{{ player }}</li>
+                            {% endfor %}
+                        {% else %}
+                            <li>N/A</li>
+                        {% endif %}
+                    </ol>
+                {% elif cat_key == 'cat6' %} {# Category 6: General Predictions #}
+                    <ul class="list-disc list-inside ml-4 text-gray-700">
+                        <li>Winner: {{ predictions.winner | default('N/A', true) }}</li>
+                        <li>Runner-up: {{ predictions.runner_up | default('N/A', true) }}</li>
+                        <li>Third Place: {{ predictions.third_place | default('N/A', true) }}</li>
+                        <li>Total Penalty Shootouts Round of 32: {{ predictions.penalties_round_32 | default('N/A', true) }}</li>
+                        <li>Total Penalty Shootouts Knockout Rest: {{ predictions.penalties_knockout_rest | default('N/A', true) }}</li>
+                        <li>Host Nation Success (Semi-Finals): {{ predictions.host_success | default('N/A', true) }}</li>
+                        <li>Group Stage Wipeouts: {{ predictions.wipeout_exists | default('N/A', true) }}</li>
+                    </ul>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

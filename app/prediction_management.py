@@ -1,5 +1,5 @@
 from datetime import datetime
-from .models import db, Prediction
+from .models import db, Prediction, User
 from .constants import DEADLINE
 
 def is_deadline_passed():
@@ -11,6 +11,28 @@ def get_user_predictions(user_id):
     preds = Prediction.query.filter_by(user_id=user_id).all()
     # Convert to a dictionary keyed by category for easier template access
     return {p.category: p.prediction_data for p in preds}
+
+def get_all_user_predictions():
+    """Retrieves all predictions for all users."""
+    all_users = User.query.all()
+    all_predictions = []
+
+    for user in all_users:
+        user_preds = get_user_predictions(user.id)
+        # Ensure all categories exist in the dict to prevent template errors
+        # This mirrors the logic in the predictions route
+        for cat in ['cat1', 'cat2', 'cat4', 'cat6']:
+            if cat not in user_preds:
+                user_preds[cat] = {}
+        for cat in ['cat3', 'cat5']:
+            if cat not in user_preds:
+                user_preds[cat] = []
+        
+        all_predictions.append({
+            'username': user.username,
+            'predictions': user_preds
+        })
+    return all_predictions
 
 def save_prediction(user_id, category, data):
     """Saves or updates a prediction for a specific category."""

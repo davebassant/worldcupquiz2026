@@ -48,3 +48,12 @@ RIVALRY_TEAMS = {
     'france_vs_norway': ['France', 'Norway', 'Tie'],
     'spain_vs_portugal': ['Spain', 'Portugal', 'Tie']
 }
+
+CATEGORY_TITLES = {
+    'cat1': 'Category 1: Match Totals',
+    'cat2': 'Category 2: Group Qualification',
+    'cat3': 'Category 3: The Lucky 8',
+    'cat4': 'Category 4: Rivalry Face-Offs',
+    'cat5': 'Category 5: Golden Boot Ranking',
+    'cat6': 'Category 6: General Predictions'
+}

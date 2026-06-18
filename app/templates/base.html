@@ -24,6 +24,7 @@
                     <a href="/" class="hover:bg-blue-500 px-3 py-2 rounded-md text-sm font-medium">Home</a>
                     <a href="/predictions" class="hover:bg-blue-500 px-3 py-2 rounded-md text-sm font-medium">Predictions</a>
                     <a href="/scoreboard" class="hover:bg-blue-500 px-3 py-2 rounded-md text-sm font-medium">Scoreboard</a>
+                    <a href="/all_answers" class="hover:bg-blue-500 px-3 py-2 rounded-md text-sm font-medium">All Answers</a>
                     {% if current_user and current_user.is_admin %}
                         <a href="/admin/actuals" class="hover:bg-red-500 bg-red-600 px-3 py-2 rounded-md text-sm font-medium text-white">Admin: Actuals</a>
                         <a href="/admin/users" class="hover:bg-red-500 bg-red-600 px-3 py-2 rounded-md text-sm font-medium text-white">Admin: Users</a>
@@ -53,6 +54,7 @@
             <a href="/" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-blue-600">Home</a>
             <a href="/predictions" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-blue-600">Predictions</a>
             <a href="/scoreboard" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-blue-600">Scoreboard</a>
+            <a href="/all_answers" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-blue-600">All Answers</a>
             {% if current_user and current_user.is_admin %}
                 <a href="/admin/actuals" class="block px-3 py-2 rounded-md text-base font-medium bg-red-600 hover:bg-red-700 text-white">Admin: Actuals</a>
                 <a href="/admin/users" class="block px-3 py-2 rounded-md text-base font-medium bg-red-600 hover:bg-red-700 text-white">Admin: Users</a>
