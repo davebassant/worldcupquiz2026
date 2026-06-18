@@ -8,18 +8,18 @@ DEADLINE = datetime(2026, 6, 11, 19, 0, 0)
 TOURNAMENT_END = datetime(2026, 7, 19, 22, 59, 0)
 
 GROUPS = {
-    'Group A': ['Mexico', 'South Korea', 'Denmark', 'Mali'],
-    'Group B': ['Canada', 'Belgium', 'Chile', 'Oman'],
-    'Group C': ['USA', 'Netherlands', 'Senegal', 'New Zealand'],
-    'Group D': ['France', 'Switzerland', 'Uruguay', 'Saudi Arabia'],
-    'Group E': ['Brazil', 'Norway', 'Egypt', 'Australia'],
-    'Group F': ['England', 'Poland', 'Ecuador', 'Iraq'],
-    'Group G': ['Spain', 'Portugal', 'Nigeria', 'Panama'],
-    'Group H': ['Argentina', 'Austria', 'Japan', 'Cameroon'],
-    'Group I': ['Germany', 'Sweden', 'Morocco', 'Jamaica'],
-    'Group J': ['Italy', 'Croatia', 'Colombia', 'Uzbekistan'],
-    'Group K': ['Portugal', 'Turkey', 'Ghana', 'Honduras'],
-    'Group L': ['Belgium', 'Ukraine', 'Algeria', 'Costa Rica']
+    'Group A': ['Mexico', 'South Africa', 'South Korea', 'Czechia'],
+    'Group B': ['Canada', 'Bosnia and Herzegovina', 'Qatar', 'Switzerland'],
+    'Group C': ['Brazil', 'Morocco', 'Haiti', 'Scotland'],
+    'Group D': ['USA', 'Paraguay', 'Australia', 'Turkiye'],
+    'Group E': ['Germany', 'Curacao', 'Ivory Coast', 'Ecuador'],
+    'Group F': ['Netherlands', 'Japan', 'Sweden', 'Tunisia'],
+    'Group G': ['Belgium', 'Egypt', 'Iran', 'New Zealand'],
+    'Group H': ['Spain', 'Cabo Verde', 'Saudi Arabia', 'Uruguay'],
+    'Group I': ['France', 'Senegal', 'Iraq', 'Norway'],
+    'Group J': ['Argentina', 'Algeria', 'Austria', 'Jordan'],
+    'Group K': ['Portugal', 'DR Congo', 'Uzbekistan', 'Columbia'],
+    'Group L': ['England', 'Croatia', 'Ghana', 'Panama']
 }
 
 RIVALRIES = [
